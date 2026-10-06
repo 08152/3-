@@ -7,418 +7,71 @@
 
 <style>
 *{box-sizing:border-box}
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#0b0d12;
-    color:#eee;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-button,input,select{
-    font:inherit;
-}
-
-button{
-    border:1px solid #303542;
-    background:#181c25;
-    color:#eee;
-    border-radius:7px;
-    padding:9px 11px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#252b37;
-}
-
-button.active{
-    background:#5b4bff;
-    border-color:#8175ff;
-}
-
-.app{
-    display:grid;
-    grid-template-columns:260px 1fr 290px;
-    grid-template-rows:58px 1fr 155px;
-    width:100vw;
-    height:100vh;
-}
-
-.topbar{
-    grid-column:1/4;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:0 14px;
-    background:#11141b;
-    border-bottom:1px solid #292e38;
-}
-
-.logo{
-    font-size:18px;
-    font-weight:bold;
-    color:#fff;
-    margin-right:12px;
-}
-
-.logo span{
-    color:#7c6cff;
-}
-
-.topbar .spacer{
-    flex:1;
-}
-
-.fileBtn{
-    position:relative;
-    overflow:hidden;
-}
-
-.fileBtn input{
-    position:absolute;
-    inset:0;
-    opacity:0;
-    cursor:pointer;
-}
-
-.panel{
-    background:#11141b;
-    border-right:1px solid #292e38;
-    overflow:auto;
-}
-
-.right{
-    border-right:0;
-    border-left:1px solid #292e38;
-}
-
-.section{
-    padding:13px;
-    border-bottom:1px solid #252a33;
-}
-
-.section h3{
-    margin:0 0 10px;
-    font-size:12px;
-    text-transform:uppercase;
-    color:#8e96a8;
-    letter-spacing:1px;
-}
-
-.row{
-    display:flex;
-    gap:7px;
-    margin-bottom:8px;
-}
-
-.row>*{
-    flex:1;
-}
-
-label{
-    display:block;
-    color:#aab1bf;
-    font-size:11px;
-    margin-bottom:4px;
-}
-
-input[type=number],
-input[type=text],
-select{
-    width:100%;
-    border:1px solid #303542;
-    background:#0c0f15;
-    color:#fff;
-    border-radius:6px;
-    padding:8px;
-    outline:none;
-}
-
-input:focus,
-select:focus{
-    border-color:#665aff;
-}
-
-.workspace{
-    position:relative;
-    overflow:hidden;
-    background:#080a0e;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-#stage{
-    position:absolute;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    cursor:default;
-}
-
-#media{
-    position:absolute;
-    display:none;
-    user-select:none;
-    pointer-events:none;
-    transform-origin:center center;
-}
-
-#three{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-}
-
-#dragLayer{
-    position:absolute;
-    inset:0;
-    z-index:10;
-    cursor:default;
-}
-
-#selection{
-    position:absolute;
-    display:none;
-    z-index:20;
-    border:1px solid #8b7dff;
-    box-shadow:0 0 0 1px #19152f,0 0 18px #6655ff55;
-    pointer-events:none;
-}
-
-.handle{
-    position:absolute;
-    width:9px;
-    height:9px;
-    background:#fff;
-    border:1px solid #6357ff;
-    border-radius:2px;
-}
-
-.handle.tl{left:-5px;top:-5px}
-.handle.tr{right:-5px;top:-5px}
-.handle.bl{left:-5px;bottom:-5px}
-.handle.br{right:-5px;bottom:-5px}
-
-#empty{
-    position:absolute;
-    z-index:2;
-    text-align:center;
-    color:#667084;
-    pointer-events:none;
-}
-
-#empty strong{
-    display:block;
-    color:#9ba4b7;
-    font-size:18px;
-    margin-bottom:7px;
-}
-
-.timeline{
-    grid-column:1/4;
-    background:#0e1117;
-    border-top:1px solid #292e38;
-    display:flex;
-    flex-direction:column;
-    min-width:0;
-}
-
-.timelineTop{
-    height:48px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:7px 12px;
-    border-bottom:1px solid #252a33;
-}
-
-.time{
-    width:90px;
-    font-family:monospace;
-    color:#bfc6d5;
-}
-
-.timelineArea{
-    position:relative;
-    flex:1;
-    overflow:hidden;
-    background:
-        repeating-linear-gradient(
-            to right,
-            #161a22 0px,
-            #161a22 59px,
-            #202530 60px
-        );
-}
-
-.playhead{
-    position:absolute;
-    top:0;
-    bottom:0;
-    width:2px;
-    background:#ff4d78;
-    left:0;
-    z-index:10;
-}
-
-.playhead:before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-5px;
-    border-left:6px solid transparent;
-    border-right:6px solid transparent;
-    border-top:7px solid #ff4d78;
-}
-
-.track{
-    position:absolute;
-    left:0;
-    right:0;
-    top:26px;
-    height:42px;
-    background:#171b23;
-    border-top:1px solid #292e38;
-    border-bottom:1px solid #292e38;
-}
-
-.clip{
-    position:absolute;
-    top:4px;
-    height:32px;
-    border-radius:5px;
-    background:#5145ce;
-    border:1px solid #776dff;
-    padding:7px 10px;
-    font-size:12px;
-    overflow:hidden;
-    white-space:nowrap;
-}
-
-.animList{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    max-height:230px;
-    overflow:auto;
-}
-
-.anim{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:8px;
-    background:#171b23;
-    border:1px solid #292e38;
-    border-radius:6px;
-    cursor:pointer;
-}
-
-.anim:hover{
-    background:#202530;
-}
-
-.anim.active{
-    border-color:#6559ff;
-    background:#252040;
-}
-
-.animName{
-    flex:1;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-}
-
-.badge{
-    font-size:10px;
-    color:#929aac;
-}
-
-.status{
-    font-size:11px;
-    color:#747d90;
-    line-height:1.5;
-}
-
-.range{
-    width:100%;
-    accent-color:#6c5cff;
-}
-
-.zoom{
-    position:absolute;
-    bottom:12px;
-    right:12px;
-    z-index:30;
-    display:flex;
-    gap:5px;
-    background:#11141bdd;
-    padding:6px;
-    border:1px solid #303542;
-    border-radius:8px;
-}
-
-.zoom button{
-    padding:6px 9px;
-}
-
-.small{
-    font-size:11px;
-}
-
-.danger{
-    color:#ff748d;
-}
-
-.green{
-    color:#65df9a;
-}
-
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b0d12;color:#eee;font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{border:1px solid #303542;background:#181c25;color:#eee;border-radius:7px;padding:9px 11px;cursor:pointer}
+button:hover{background:#252b37}
+button.active{background:#5b4bff;border-color:#8175ff}
+.app{display:grid;grid-template-columns:260px 1fr 290px;grid-template-rows:58px 1fr 155px;width:100vw;height:100vh}
+.topbar{grid-column:1/4;display:flex;align-items:center;gap:10px;padding:0 14px;background:#11141b;border-bottom:1px solid #292e38}
+.logo{font-size:18px;font-weight:bold;color:#fff;margin-right:12px}
+.logo span{color:#7c6cff}
+.topbar .spacer{flex:1}
+.fileBtn{position:relative;overflow:hidden}
+.fileBtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.panel{background:#11141b;border-right:1px solid #292e38;overflow:auto}
+.right{border-right:0;border-left:1px solid #292e38}
+.section{padding:13px;border-bottom:1px solid #252a33}
+.section h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;color:#8e96a8;letter-spacing:1px}
+.row{display:flex;gap:7px;margin-bottom:8px}
+.row>*{flex:1}
+label{display:block;color:#aab1bf;font-size:11px;margin-bottom:4px}
+input[type=number],input[type=text],select{width:100%;border:1px solid #303542;background:#0c0f15;color:#fff;border-radius:6px;padding:8px;outline:none}
+input:focus,select:focus{border-color:#665aff}
+.workspace{position:relative;overflow:hidden;background:#080a0e;display:flex;align-items:center;justify-content:center}
+#stage{position:absolute;width:100%;height:100%;overflow:hidden;cursor:default}
+#media{position:absolute;display:none;user-select:none;pointer-events:none;transform-origin:center center}
+#video{position:absolute;display:none;user-select:none;pointer-events:none}
+#three{position:absolute;inset:0;pointer-events:none}
+#dragLayer{position:absolute;inset:0;z-index:10;cursor:default}
+#selection{position:absolute;display:none;z-index:20;border:1px solid #8b7dff;box-shadow:0 0 0 1px #19152f,0 0 18px #6655ff55;pointer-events:none}
+.handle{position:absolute;width:9px;height:9px;background:#fff;border:1px solid #6357ff;border-radius:2px}
+.handle.tl{left:-5px;top:-5px}.handle.tr{right:-5px;top:-5px}.handle.bl{left:-5px;bottom:-5px}.handle.br{right:-5px;bottom:-5px}
+#empty{position:absolute;z-index:2;text-align:center;color:#667084;pointer-events:none;left:50%;top:50%;transform:translate(-50%,-50%)}
+#empty strong{display:block;color:#9ba4b7;font-size:18px;margin-bottom:7px}
+.timeline{grid-column:1/4;background:#0e1117;border-top:1px solid #292e38;display:flex;flex-direction:column;min-width:0}
+.timelineTop{height:48px;display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #252a33}
+.time{width:90px;font-family:monospace;color:#bfc6d5}
+.timelineArea{position:relative;flex:1;overflow:hidden;background:repeating-linear-gradient(to right,#161a22 0px,#161a22 59px,#202530 60px)}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:#ff4d78;left:0;z-index:10}
+.playhead:before{content:"";position:absolute;top:0;left:-5px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #ff4d78}
+.track{position:absolute;left:0;right:0;top:26px;height:42px;background:#171b23;border-top:1px solid #292e38;border-bottom:1px solid #292e38}
+.clip{position:absolute;top:4px;height:32px;border-radius:5px;background:#5145ce;border:1px solid #776dff;padding:7px 10px;font-size:12px;overflow:hidden;white-space:nowrap}
+.animList{display:flex;flex-direction:column;gap:5px;max-height:230px;overflow:auto}
+.anim{display:flex;align-items:center;gap:7px;padding:8px;background:#171b23;border:1px solid #292e38;border-radius:6px;cursor:pointer}
+.anim:hover{background:#202530}
+.anim.active{border-color:#6559ff;background:#252040}
+.animName{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.badge{font-size:10px;color:#929aac}
+.status{font-size:11px;color:#747d90;line-height:1.5}
+.range{width:100%;accent-color:#6c5cff}
+.zoom{position:absolute;bottom:12px;right:12px;z-index:30;display:flex;gap:5px;background:#11141bdd;padding:6px;border:1px solid #303542;border-radius:8px}
+.zoom button{padding:6px 9px}
+.green{color:#65df9a}
+.danger{color:#ff748d}
+.glbBadge{display:inline-block;margin-left:5px;padding:2px 5px;border-radius:4px;background:#314a3b;color:#76e2a1;font-size:9px}
 @media(max-width:900px){
-    .app{
-        grid-template-columns:210px 1fr;
-        grid-template-rows:58px 1fr 155px;
-    }
-
-    .right{
-        display:none;
-    }
-
-    .topbar{
-        grid-column:1/3;
-    }
-
-    .timeline{
-        grid-column:1/3;
-    }
+.app{grid-template-columns:210px 1fr;grid-template-rows:58px 1fr 155px}
+.right{display:none}
+.topbar{grid-column:1/3}
+.timeline{grid-column:1/3}
 }
-
 @media(max-width:650px){
-    .app{
-        grid-template-columns:1fr;
-        grid-template-rows:52px 1fr 145px;
-    }
-
-    .panel{
-        display:none;
-    }
-
-    .topbar{
-        grid-column:1;
-    }
-
-    .timeline{
-        grid-column:1;
-    }
-
-    .logo{
-        font-size:14px;
-    }
+.app{grid-template-columns:1fr;grid-template-rows:52px 1fr 145px}
+.panel{display:none}
+.topbar{grid-column:1}
+.timeline{grid-column:1}
+.logo{font-size:14px}
 }
 </style>
 </head>
@@ -428,1501 +81,2386 @@ select:focus{
 <div class="app">
 
 <header class="topbar">
-    <div class="logo">Ghost<span>FX</span> PRO</div>
 
-    <button class="fileBtn">
-        🎬 Hintergrund
-        <input id="mediaInput" type="file" accept="image/*,video/*">
-    </button>
+<div class="logo">Ghost<span>FX</span> PRO</div>
 
-    <button class="fileBtn">
-        🧍 FBX Modell
-        <input id="fbxInput" type="file" accept=".fbx">
-    </button>
+<button class="fileBtn">
+🎬 Hintergrund
+<input id="mediaInput" type="file" accept="image/*,video/*">
+</button>
 
-    <button id="playBtn">▶</button>
-    <button id="stopBtn">■</button>
+<button class="fileBtn">
+🧍 3D Modell
+<input id="modelInput" type="file" accept=".fbx,.glb,.gltf,model/gltf-binary,model/gltf+json">
+</button>
 
-    <div class="spacer"></div>
+<button id="playBtn">▶</button>
+<button id="stopBtn">■</button>
 
-    <button id="resetView">⟳ Ansicht</button>
-    <button id="exportBtn">⬇ WebM</button>
+<div class="spacer"></div>
+
+<button id="resetView">⟳ Ansicht</button>
+<button id="exportBtn">⬇ WebM</button>
+
 </header>
+
 
 <aside class="panel left">
 
-    <div class="section">
-        <h3>Projekt</h3>
+<div class="section">
 
-        <div class="status" id="projectStatus">
-            Kein Hintergrund geladen.<br>
-            Kein FBX geladen.
-        </div>
-    </div>
+<h3>Projekt</h3>
 
-    <div class="section">
-        <h3>Objekt</h3>
+<div class="status" id="projectStatus">
+Kein Hintergrund geladen.<br>
+Kein 3D-Modell geladen.
+</div>
 
-        <div class="row">
-            <div>
-                <label>X</label>
-                <input id="posX" type="number" value="0" step="1">
-            </div>
-            <div>
-                <label>Y</label>
-                <input id="posY" type="number" value="0" step="1">
-            </div>
-        </div>
+</div>
 
-        <div class="row">
-            <div>
-                <label>Breite %</label>
-                <input id="scale" type="number" value="25" min="1" max="500" step="1">
-            </div>
 
-            <div>
-                <label>Rotation °</label>
-                <input id="rotation" type="number" value="0" step="1">
-            </div>
-        </div>
+<div class="section">
 
-        <button id="centerBtn" style="width:100%">⊙ Zentrieren</button>
-    </div>
+<h3>Objekt</h3>
 
-    <div class="section">
-        <h3>Zoom</h3>
+<div class="row">
 
-        <input id="zoomRange"
-               class="range"
-               type="range"
-               min="0.25"
-               max="4"
-               step="0.01"
-               value="1">
+<div>
+<label>X</label>
+<input id="posX" type="number" value="0" step="1">
+</div>
 
-        <div class="status">
-            <span id="zoomText">100%</span>
-        </div>
-    </div>
+<div>
+<label>Y</label>
+<input id="posY" type="number" value="0" step="1">
+</div>
 
-    <div class="section">
-        <h3>Hintergrund</h3>
+</div>
 
-        <button id="mediaPlay" style="width:100%">
-            ▶ Video abspielen
-        </button>
 
-        <div style="height:7px"></div>
+<div class="row">
 
-        <input id="mediaProgress"
-               class="range"
-               type="range"
-               min="0"
-               max="100"
-               value="0">
+<div>
+<label>Breite %</label>
+<input id="scale" type="number" value="25" min="1" max="500" step="1">
+</div>
 
-        <div class="status" id="mediaTime">
-            00:00 / 00:00
-        </div>
-    </div>
+<div>
+<label>Rotation °</label>
+<input id="rotation" type="number" value="0" step="1">
+</div>
+
+</div>
+
+<button id="centerBtn" style="width:100%">
+⊙ Zentrieren
+</button>
+
+</div>
+
+
+<div class="section">
+
+<h3>Zoom</h3>
+
+<input id="zoomRange"
+class="range"
+type="range"
+min="0.25"
+max="4"
+step="0.01"
+value="1">
+
+<div class="status">
+<span id="zoomText">100%</span>
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h3>Hintergrund</h3>
+
+<button id="mediaPlay" style="width:100%">
+▶ Video abspielen
+</button>
+
+<div style="height:7px"></div>
+
+<input id="mediaProgress"
+class="range"
+type="range"
+min="0"
+max="100"
+value="0">
+
+<div class="status" id="mediaTime">
+00:00 / 00:00
+</div>
+
+</div>
 
 </aside>
 
-<main class="workspace" id="workspace">
 
-    <div id="stage">
+<main class="workspace">
 
-        <div id="empty">
-            <strong>GhostFX PRO</strong>
-           Bild/Video und FBX importieren
-        </div>
+<div id="stage">
 
-        <img id="media">
+<div id="empty">
+<strong>GhostFX PRO</strong>
+Bild/Video und FBX oder GLB importieren
+</div>
 
-        <video id="video"
-               playsinline
-               preload="auto"
-               style="display:none;position:absolute;pointer-events:none;"></video>
+<img id="media">
 
-        <div id="three"></div>
+<video
+id="video"
+playsinline
+preload="auto">
+</video>
 
-        <div id="dragLayer"></div>
+<div id="three"></div>
 
-        <div id="selection">
-            <div class="handle tl"></div>
-            <div class="handle tr"></div>
-            <div class="handle bl"></div>
-            <div class="handle br"></div>
-        </div>
+<div id="dragLayer"></div>
 
-    </div>
+<div id="selection">
 
-    <div class="zoom">
-        <button id="zoomOut">−</button>
-        <button id="zoom100">100%</button>
-        <button id="zoomIn">+</button>
-    </div>
+<div class="handle tl"></div>
+<div class="handle tr"></div>
+<div class="handle bl"></div>
+<div class="handle br"></div>
+
+</div>
+
+</div>
+
+
+<div class="zoom">
+
+<button id="zoomOut">−</button>
+<button id="zoom100">100%</button>
+<button id="zoomIn">+</button>
+
+</div>
 
 </main>
 
+
 <aside class="panel right">
 
-    <div class="section">
-        <h3>Animationen</h3>
+<div class="section">
 
-        <div id="animList" class="animList">
-            <div class="status">
-                Noch kein FBX-Modell geladen.
-            </div>
-        </div>
-    </div>
+<h3>Animationen</h3>
 
-    <div class="section">
-        <h3>Animation</h3>
+<div id="animList" class="animList">
 
-        <div class="row">
-            <button id="animPlay">▶ Play</button>
-            <button id="animPause">Ⅱ Pause</button>
-            <button id="animStop">■ Stop</button>
-        </div>
+<div class="status">
+Noch kein 3D-Modell geladen.
+</div>
 
-        <label>Geschwindigkeit</label>
-        <input id="speed"
-               class="range"
-               type="range"
-               min="0"
-               max="3"
-               step="0.05"
-               value="1">
+</div>
 
-        <div class="status">
-            Speed: <span id="speedText">1.00x</span>
-        </div>
-    </div>
+</div>
 
-    <div class="section">
-        <h3>Modell</h3>
 
-        <div class="status" id="modelInfo">
-            Kein Modell.
-        </div>
-    </div>
+<div class="section">
+
+<h3>Animation</h3>
+
+<div class="row">
+
+<button id="animPlay">▶ Play</button>
+<button id="animPause">Ⅱ Pause</button>
+<button id="animStop">■ Stop</button>
+
+</div>
+
+
+<label>Geschwindigkeit</label>
+
+<input id="speed"
+class="range"
+type="range"
+min="0"
+max="3"
+step="0.05"
+value="1">
+
+<div class="status">
+Speed:
+<span id="speedText">1.00x</span>
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h3>Modell</h3>
+
+<div class="status" id="modelInfo">
+Kein Modell.
+</div>
+
+</div>
 
 </aside>
 
+
 <section class="timeline">
 
-    <div class="timelineTop">
+<div class="timelineTop">
 
-        <button id="timelinePlay">▶</button>
+<button id="timelinePlay">▶</button>
 
-        <div class="time" id="currentTime">
-            00:00.000
-        </div>
+<div class="time" id="currentTime">
+00:00.000
+</div>
 
-        <input id="timelineRange"
-               class="range"
-               type="range"
-               min="0"
-               max="100"
-               step="0.001"
-               value="0">
+<input id="timelineRange"
+class="range"
+type="range"
+min="0"
+max="100"
+step="0.001"
+value="0">
 
-        <div class="time" id="duration">
-            00:00
-        </div>
+<div class="time" id="duration">
+00:00
+</div>
 
-    </div>
+</div>
 
-    <div class="timelineArea" id="timelineArea">
 
-        <div class="track">
+<div class="timelineArea" id="timelineArea">
 
-            <div class="clip"
-                 id="clip">
-                FBX / Animation
-            </div>
+<div class="track">
 
-        </div>
+<div class="clip" id="clip">
+3D Modell / Animation
+</div>
 
-        <div class="playhead" id="playhead"></div>
+</div>
 
-    </div>
+<div class="playhead" id="playhead"></div>
+
+</div>
 
 </section>
 
 </div>
 
+
 <script type="importmap">
 {
-    "imports":{
-        "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-        "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-    }
+"imports":{
+"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+}
 }
 </script>
+
 
 <script type="module">
 
 import * as THREE from "three";
-import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
+
+import {
+FBXLoader
+} from "three/addons/loaders/FBXLoader.js";
+
+import {
+GLTFLoader
+} from "three/addons/loaders/GLTFLoader.js";
+
 
 /* =========================================================
-   ELEMENTE
+ELEMENTE
 ========================================================= */
 
-const workspace = document.getElementById("workspace");
-const stage = document.getElementById("stage");
-const threeDiv = document.getElementById("three");
-const dragLayer = document.getElementById("dragLayer");
+const stage=document.getElementById("stage");
+const threeDiv=document.getElementById("three");
+const dragLayer=document.getElementById("dragLayer");
 
-const mediaInput = document.getElementById("mediaInput");
-const fbxInput = document.getElementById("fbxInput");
+const mediaInput=document.getElementById("mediaInput");
+const modelInput=document.getElementById("modelInput");
 
-const image = document.getElementById("media");
-const video = document.getElementById("video");
+const image=document.getElementById("media");
+const video=document.getElementById("video");
 
-const empty = document.getElementById("empty");
-const selection = document.getElementById("selection");
+const empty=document.getElementById("empty");
+const selection=document.getElementById("selection");
 
-const posX = document.getElementById("posX");
-const posY = document.getElementById("posY");
-const scaleInput = document.getElementById("scale");
-const rotationInput = document.getElementById("rotation");
+const posX=document.getElementById("posX");
+const posY=document.getElementById("posY");
 
-const animList = document.getElementById("animList");
-const modelInfo = document.getElementById("modelInfo");
+const scaleInput=document.getElementById("scale");
+const rotationInput=document.getElementById("rotation");
 
-const zoomRange = document.getElementById("zoomRange");
-const zoomText = document.getElementById("zoomText");
+const animList=document.getElementById("animList");
+const modelInfo=document.getElementById("modelInfo");
 
-const mediaPlay = document.getElementById("mediaPlay");
-const mediaProgress = document.getElementById("mediaProgress");
-const mediaTime = document.getElementById("mediaTime");
+const zoomRange=document.getElementById("zoomRange");
+const zoomText=document.getElementById("zoomText");
 
-const timelineRange = document.getElementById("timelineRange");
-const currentTime = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
-const playhead = document.getElementById("playhead");
+const mediaPlay=document.getElementById("mediaPlay");
+const mediaProgress=document.getElementById("mediaProgress");
+const mediaTime=document.getElementById("mediaTime");
 
-const projectStatus = document.getElementById("projectStatus");
+const timelineRange=document.getElementById("timelineRange");
+const currentTime=document.getElementById("currentTime");
+const durationEl=document.getElementById("duration");
+const playhead=document.getElementById("playhead");
 
-const playBtn = document.getElementById("playBtn");
-const stopBtn = document.getElementById("stopBtn");
+const projectStatus=document.getElementById("projectStatus");
 
-const animPlay = document.getElementById("animPlay");
-const animPause = document.getElementById("animPause");
-const animStop = document.getElementById("animStop");
+const playBtn=document.getElementById("playBtn");
+const stopBtn=document.getElementById("stopBtn");
 
-const speed = document.getElementById("speed");
-const speedText = document.getElementById("speedText");
+const animPlay=document.getElementById("animPlay");
+const animPause=document.getElementById("animPause");
+const animStop=document.getElementById("animStop");
+
+const timelinePlay=document.getElementById("timelinePlay");
+
+const speed=document.getElementById("speed");
+const speedText=document.getElementById("speedText");
+
 
 /* =========================================================
-   THREE
+THREE
 ========================================================= */
 
-const renderer = new THREE.WebGLRenderer({
-    alpha:true,
-    antialias:true,
-    preserveDrawingBuffer:true
+const renderer=new THREE.WebGLRenderer({
+alpha:true,
+antialias:true,
+preserveDrawingBuffer:true
 });
 
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setClearColor(0x000000,0);
-
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-threeDiv.appendChild(renderer.domElement);
-
-const scene = new THREE.Scene();
-
-/*
-    WICHTIG:
-
-    OrthographicCamera sorgt dafür,
-    dass das Modell nicht perspektivisch "wegschwebt".
-
-    Wir arbeiten hier mit einer 2D-Editor-Ebene.
-*/
-
-let camera = new THREE.OrthographicCamera(
-    -1,
-    1,
-    1,
-    -1,
-    0.01,
-    1000
+renderer.setPixelRatio(
+Math.min(devicePixelRatio,2)
 );
 
-camera.position.z = 100;
+renderer.setClearColor(0,0);
 
-const ambient = new THREE.HemisphereLight(
-    0xffffff,
-    0x555555,
-    2.2
+renderer.outputColorSpace=
+THREE.SRGBColorSpace;
+
+threeDiv.appendChild(
+renderer.domElement
+);
+
+
+const scene=new THREE.Scene();
+
+
+const camera=new THREE.OrthographicCamera(
+-1,1,1,-1,
+0.01,
+10000
+);
+
+camera.position.z=100;
+
+
+const ambient=
+new THREE.HemisphereLight(
+0xffffff,
+0x555555,
+2.2
 );
 
 scene.add(ambient);
 
-const directional = new THREE.DirectionalLight(
-    0xffffff,
-    3
+
+const directional=
+new THREE.DirectionalLight(
+0xffffff,
+3
 );
 
 directional.position.set(
-    200,
-    300,
-    500
+200,
+300,
+500
 );
 
 scene.add(directional);
 
+
 /* =========================================================
-   DATEN
+DATEN
 ========================================================= */
 
-let model = null;
-let mixer = null;
-let animations = [];
-let activeAction = null;
-let activeAnimation = null;
+let model=null;
 
-let modelBounds = {
-    width:100,
-    height:100
+let mixer=null;
+
+let animations=[];
+
+let activeAction=null;
+
+let activeAnimation=null;
+
+let modelBounds={
+width:100,
+height:100,
+depth:100
 };
 
-let editorZoom = 1;
+let modelScreenX=0;
+let modelScreenY=0;
 
-let mediaLoaded = false;
-let mediaType = null;
+let editorZoom=1;
 
-let playing = false;
+let mediaLoaded=false;
+let mediaType=null;
 
-let dragging = false;
+let playing=false;
 
-let dragStart = {
-    x:0,
-    y:0,
-    modelX:0,
-    modelY:0
+let dragging=false;
+
+let dragStart={
+x:0,
+y:0,
+modelX:0,
+modelY:0
 };
 
-let modelScreenX = 0;
-let modelScreenY = 0;
 
 /* =========================================================
-   HILFSFUNKTIONEN
+HELPER
 ========================================================= */
 
 function formatTime(seconds){
 
-    if(!isFinite(seconds)) seconds=0;
+if(!isFinite(seconds))seconds=0;
 
-    const m = Math.floor(seconds/60);
-    const s = Math.floor(seconds%60);
-    const ms = Math.floor((seconds%1)*1000);
+const m=Math.floor(seconds/60);
+const s=Math.floor(seconds%60);
+const ms=Math.floor((seconds%1)*1000);
 
-    return String(m).padStart(2,"0")
-        + ":"
-        + String(s).padStart(2,"0")
-        + "."
-        + String(ms).padStart(3,"0");
+return String(m).padStart(2,"0")
++":"
++String(s).padStart(2,"0")
++"."
++String(ms).padStart(3,"0");
+
 }
+
 
 function clamp(v,min,max){
-    return Math.max(min,Math.min(max,v));
+
+return Math.max(
+min,
+Math.min(max,v)
+);
+
 }
 
+
 /* =========================================================
-   CAMERA / 2D EDITOR
+RESIZE
 ========================================================= */
 
 function resizeEditor(){
 
-    const w = stage.clientWidth;
-    const h = stage.clientHeight;
+const w=stage.clientWidth;
+const h=stage.clientHeight;
 
-    renderer.setSize(w,h,false);
+renderer.setSize(
+w,
+h,
+false
+);
 
-    /*
-       Editorkoordinaten entsprechen Pixeln.
+camera.left=-w/2;
+camera.right=w/2;
+camera.top=h/2;
+camera.bottom=-h/2;
 
-       Das ist der entscheidende Teil:
-       Das Modell hängt an der 2D-Ebene.
-    */
+camera.updateProjectionMatrix();
 
-    camera.left = -w/2;
-    camera.right = w/2;
-    camera.top = h/2;
-    camera.bottom = -h/2;
+updateModel();
 
-    camera.updateProjectionMatrix();
-
-    updateModel();
 }
 
-window.addEventListener("resize",resizeEditor);
+window.addEventListener(
+"resize",
+resizeEditor
+);
+
 
 /* =========================================================
-   MODELL POSITION
+MODELL UPDATE
 ========================================================= */
 
 function updateModel(){
 
-    if(!model) return;
+if(!model)return;
 
-    model.position.x = modelScreenX - stage.clientWidth/2;
-    model.position.y = stage.clientHeight/2 - modelScreenY;
 
-    model.position.z = 0;
+model.position.x=
+modelScreenX-
+stage.clientWidth/2;
 
-    const size = Number(scaleInput.value) || 25;
+model.position.y=
+stage.clientHeight/2-
+modelScreenY;
 
-    /*
-       Modell wird über seine BoundingBox
-       auf eine verständliche Editorgröße gebracht.
-    */
+model.position.z=0;
 
-    const maxDimension =
-        Math.max(modelBounds.width,modelBounds.height);
 
-    const targetSize =
-        Math.min(stage.clientWidth,stage.clientHeight)
-        * size / 100;
+const percentage=
+Number(scaleInput.value)||25;
 
-    const s = targetSize / Math.max(maxDimension,0.001);
 
-    model.scale.setScalar(s);
+const maxDimension=
+Math.max(
+modelBounds.width,
+modelBounds.height
+);
 
-    model.rotation.z =
-        THREE.MathUtils.degToRad(
-            Number(rotationInput.value)||0
-        );
 
-    updateSelection();
+const targetSize=
+Math.min(
+stage.clientWidth,
+stage.clientHeight
+)
+*
+percentage/
+100;
+
+
+const s=
+targetSize/
+Math.max(
+maxDimension,
+0.001
+);
+
+
+model.scale.setScalar(s);
+
+
+model.rotation.z=
+THREE.MathUtils.degToRad(
+Number(rotationInput.value)||0
+);
+
+
+updateSelection();
+
 }
+
 
 function updateFields(){
 
-    posX.value = Math.round(modelScreenX);
-    posY.value = Math.round(modelScreenY);
+posX.value=
+Math.round(modelScreenX);
+
+posY.value=
+Math.round(modelScreenY);
+
 }
+
+
+/* =========================================================
+SELECTION
+========================================================= */
 
 function updateSelection(){
 
-    if(!model){
-        selection.style.display="none";
-        return;
-    }
+if(!model){
 
-    /*
-       Box wird aus dem gerenderten Modell
-       über Projektion berechnet.
-    */
+selection.style.display="none";
 
-    const box = new THREE.Box3().setFromObject(model);
+return;
 
-    const corners = [
-        new THREE.Vector3(box.min.x,box.min.y,0),
-        new THREE.Vector3(box.max.x,box.min.y,0),
-        new THREE.Vector3(box.min.x,box.max.y,0),
-        new THREE.Vector3(box.max.x,box.max.y,0)
-    ];
-
-    let minX=Infinity;
-    let maxX=-Infinity;
-    let minY=Infinity;
-    let maxY=-Infinity;
-
-    for(const p of corners){
-
-        const x =
-            p.x + stage.clientWidth/2;
-
-        const y =
-            stage.clientHeight/2 - p.y;
-
-        minX=Math.min(minX,x);
-        maxX=Math.max(maxX,x);
-
-        minY=Math.min(minY,y);
-        maxY=Math.max(maxY,y);
-    }
-
-    selection.style.display="block";
-
-    selection.style.left=minX+"px";
-    selection.style.top=minY+"px";
-
-    selection.style.width=Math.max(1,maxX-minX)+"px";
-    selection.style.height=Math.max(1,maxY-minY)+"px";
 }
 
+
+model.updateMatrixWorld(true);
+
+
+const box=
+new THREE.Box3()
+.setFromObject(model);
+
+
+const points=[
+
+new THREE.Vector3(
+box.min.x,
+box.min.y,
+0
+),
+
+new THREE.Vector3(
+box.max.x,
+box.min.y,
+0
+),
+
+new THREE.Vector3(
+box.min.x,
+box.max.y,
+0
+),
+
+new THREE.Vector3(
+box.max.x,
+box.max.y,
+0
+)
+
+];
+
+
+let minX=Infinity;
+let maxX=-Infinity;
+
+let minY=Infinity;
+let maxY=-Infinity;
+
+
+for(const p of points){
+
+const x=
+p.x+
+stage.clientWidth/2;
+
+const y=
+stage.clientHeight/2-
+p.y;
+
+minX=Math.min(minX,x);
+maxX=Math.max(maxX,x);
+
+minY=Math.min(minY,y);
+maxY=Math.max(maxY,y);
+
+}
+
+
+selection.style.display="block";
+
+selection.style.left=
+minX+"px";
+
+selection.style.top=
+minY+"px";
+
+selection.style.width=
+Math.max(
+1,
+maxX-minX
+)+"px";
+
+selection.style.height=
+Math.max(
+1,
+maxY-minY
+)+"px";
+
+}
+
+
 /* =========================================================
-   MODELL ZENTRIEREN
+ZENTRIEREN
 ========================================================= */
 
 function centerModel(){
 
-    if(!model) return;
+if(!model)return;
 
-    modelScreenX=stage.clientWidth/2;
-    modelScreenY=stage.clientHeight/2;
+modelScreenX=
+stage.clientWidth/2;
 
-    updateFields();
-    updateModel();
+modelScreenY=
+stage.clientHeight/2;
+
+updateFields();
+
+updateModel();
+
 }
 
-document.getElementById("centerBtn").onclick=centerModel;
+document.getElementById(
+"centerBtn"
+).onclick=centerModel;
+
 
 /* =========================================================
-   POSITION INPUT
+INPUTS
 ========================================================= */
 
-posX.addEventListener("input",()=>{
+posX.addEventListener(
+"input",
+()=>{
+modelScreenX=
+Number(posX.value)||0;
+updateModel();
+}
+);
 
-    modelScreenX=Number(posX.value)||0;
 
-    updateModel();
+posY.addEventListener(
+"input",
+()=>{
+modelScreenY=
+Number(posY.value)||0;
+updateModel();
+}
+);
 
-});
 
-posY.addEventListener("input",()=>{
+scaleInput.addEventListener(
+"input",
+updateModel
+);
 
-    modelScreenY=Number(posY.value)||0;
 
-    updateModel();
+rotationInput.addEventListener(
+"input",
+updateModel
+);
 
-});
-
-scaleInput.addEventListener("input",updateModel);
-rotationInput.addEventListener("input",updateModel);
 
 /* =========================================================
-   FBX IMPORT
+FBX + GLB + GLTF IMPORT
 ========================================================= */
 
-fbxInput.addEventListener("change",async e=>{
+modelInput.addEventListener(
+"change",
+async e=>{
 
-    const file=e.target.files[0];
+const file=e.target.files[0];
 
-    if(!file)return;
+if(!file)return;
 
-    const url=URL.createObjectURL(file);
 
-    const loader=new FBXLoader();
+empty.style.display="none";
 
-    loader.load(
-        url,
-        object=>{
 
-            if(model){
-                scene.remove(model);
-            }
+const extension=
+file.name
+.toLowerCase()
+.split(".")
+.pop();
 
-            model=object;
 
-            model.traverse(child=>{
+const url=
+URL.createObjectURL(file);
 
-                if(child.isMesh){
 
-                    child.frustumCulled=false;
+try{
 
-                    if(child.material){
+setModelLoading();
 
-                        child.material.transparent=false;
-                    }
-                }
 
-            });
+if(extension==="fbx"){
 
-            const box=new THREE.Box3().setFromObject(model);
+await loadFBX(
+url,
+file.name
+);
 
-            const size=new THREE.Vector3();
+}else if(
+extension==="glb" ||
+extension==="gltf"
+){
 
-            box.getSize(size);
+await loadGLTF(
+url,
+file.name,
+extension
+);
 
-            modelBounds.width=size.x;
-            modelBounds.height=size.y;
+}else{
 
-            model.position.z=0;
+throw new Error(
+"Nicht unterstütztes Modellformat"
+);
 
-            scene.add(model);
+}
 
-            animations=object.animations || [];
 
-            mixer=null;
-            activeAction=null;
-            activeAnimation=null;
+projectStatus.innerHTML=
+"Hintergrund: "+
+(
+mediaLoaded
+?
+"<span class='green'>geladen</span>"
+:
+"nicht geladen"
+)+
+"<br>"+
+"3D-Modell: <span class='green'>geladen</span>";
 
-            if(animations.length){
 
-                mixer=new THREE.AnimationMixer(model);
-            }
+}catch(error){
 
-            createAnimationList();
+console.error(error);
 
-            centerModel();
+modelInfo.innerHTML=
+"<span class='danger'>"+
+escapeHTML(
+error.message ||
+"Modell konnte nicht geladen werden."
+)+
+"</span>";
 
-            empty.style.display="none";
+alert(
+"Modell konnte nicht geladen werden."
+);
 
-            modelInfo.innerHTML=
-                "<span class='green'>FBX geladen</span><br>"+
-                "Größe: "+
-                Math.round(size.x)+
-                " × "+
-                Math.round(size.y)+
-                "<br>"+
-                "Animationen: "+
-                animations.length;
+}
 
-            projectStatus.innerHTML=
-                "Hintergrund: "+
-                (mediaLoaded ? "<span class='green'>geladen</span>":"nicht geladen")+
-                "<br>FBX: <span class='green'>geladen</span>";
 
-            URL.revokeObjectURL(url);
+URL.revokeObjectURL(url);
 
-        },
-        undefined,
-        err=>{
-            console.error(err);
-
-            modelInfo.innerHTML=
-                "<span class='danger'>FBX konnte nicht geladen werden.</span>";
-        }
-    );
 });
 
+
 /* =========================================================
-   ANIMATIONEN
+FBX LADEN
+========================================================= */
+
+async function loadFBX(
+url,
+name
+){
+
+const loader=
+new FBXLoader();
+
+
+const object=
+await loader.loadAsync(url);
+
+
+removeOldModel();
+
+
+model=object;
+
+
+prepareModel(
+model
+);
+
+
+const box=
+new THREE.Box3()
+.setFromObject(model);
+
+
+const size=
+new THREE.Vector3();
+
+box.getSize(size);
+
+
+modelBounds.width=size.x;
+modelBounds.height=size.y;
+modelBounds.depth=size.z;
+
+
+scene.add(model);
+
+
+animations=
+object.animations
+?
+object.animations.map(
+clip=>clip.clone()
+)
+:
+[];
+
+
+mixer=
+animations.length
+?
+new THREE.AnimationMixer(model)
+:
+null;
+
+
+activeAction=null;
+activeAnimation=null;
+
+
+createAnimationList();
+
+
+centerModel();
+
+
+modelInfo.innerHTML=
+"<span class='green'>FBX geladen</span><br>"+
+escapeHTML(name)+
+"<br>"+
+"Animationen: "+
+animations.length;
+
+
+}
+
+
+/* =========================================================
+GLB / GLTF LADEN
+========================================================= */
+
+async function loadGLTF(
+url,
+name,
+extension
+){
+
+const loader=
+new GLTFLoader();
+
+
+const gltf=
+await loader.loadAsync(url);
+
+
+removeOldModel();
+
+
+model=gltf.scene;
+
+
+prepareModel(
+model
+);
+
+
+const box=
+new THREE.Box3()
+.setFromObject(model);
+
+
+const size=
+new THREE.Vector3();
+
+box.getSize(size);
+
+
+modelBounds.width=size.x;
+modelBounds.height=size.y;
+modelBounds.depth=size.z;
+
+
+scene.add(model);
+
+
+/*
+   GLB/gltf Animationen werden direkt
+   aus gltf.animations übernommen.
+*/
+
+animations=
+gltf.animations
+?
+gltf.animations.map(
+clip=>clip.clone()
+)
+:
+[];
+
+
+mixer=
+animations.length
+?
+new THREE.AnimationMixer(model)
+:
+null;
+
+
+activeAction=null;
+activeAnimation=null;
+
+
+createAnimationList();
+
+
+centerModel();
+
+
+modelInfo.innerHTML=
+"<span class='green'>GLB/GLTF geladen</span>"+
+"<span class='glbBadge'>GLTF</span>"+
+"<br>"+
+escapeHTML(name)+
+"<br>"+
+"Animationen: "+
+animations.length;
+
+}
+
+
+/* =========================================================
+MODELL VORBEREITEN
+========================================================= */
+
+function prepareModel(object){
+
+object.traverse(
+child=>{
+
+if(child.isMesh){
+
+child.frustumCulled=false;
+
+child.castShadow=true;
+
+child.receiveShadow=true;
+
+
+/*
+   GLB-Materialien nicht zerstören.
+*/
+
+if(child.material){
+
+child.material.needsUpdate=true;
+
+}
+
+}
+
+});
+
+}
+
+
+/* =========================================================
+ALTES MODELL
+========================================================= */
+
+function removeOldModel(){
+
+if(model){
+
+scene.remove(model);
+
+model.traverse(
+child=>{
+
+if(child.geometry){
+
+child.geometry.dispose();
+
+}
+
+});
+
+}
+
+
+model=null;
+
+mixer=null;
+
+animations=[];
+
+activeAction=null;
+
+activeAnimation=null;
+
+animList.innerHTML="";
+
+}
+
+
+/* =========================================================
+ANIMATIONSLISTE
 ========================================================= */
 
 function createAnimationList(){
 
-    animList.innerHTML="";
+animList.innerHTML="";
 
-    if(!animations.length){
 
-        animList.innerHTML=
-            "<div class='status'>Dieses FBX enthält keine Animationen.</div>";
+if(!animations.length){
 
-        return;
-    }
+animList.innerHTML=
+"<div class='status'>"+
+"Dieses Modell enthält keine Animationen."+
+"</div>";
 
-    animations.forEach((clip,index)=>{
+durationEl.textContent="00:00";
 
-        const div=document.createElement("div");
+return;
 
-        div.className="anim";
-
-        div.innerHTML=`
-            <span>▶</span>
-            <span class="animName">${clip.name || "Animation "+(index+1)}</span>
-            <span class="badge">${clip.duration.toFixed(2)}s</span>
-        `;
-
-        div.onclick=()=>{
-
-            document
-                .querySelectorAll(".anim")
-                .forEach(x=>x.classList.remove("active"));
-
-            div.classList.add("active");
-
-            playAnimation(clip);
-        };
-
-        animList.appendChild(div);
-
-    });
-
-    document.querySelector(".anim")?.click();
 }
 
-function playAnimation(clip){
 
-    if(!mixer)return;
+animations.forEach(
+(clip,index)=>{
 
-    if(activeAction){
-        activeAction.fadeOut(.15);
-    }
+const div=
+document.createElement("div");
 
-    activeAnimation=clip;
+div.className="anim";
 
-    activeAction=mixer.clipAction(clip);
 
-    activeAction.reset();
-    activeAction.fadeIn(.15);
-    activeAction.play();
+div.innerHTML=`
 
-    activeAction.timeScale=Number(speed.value);
+<span>▶</span>
 
-    durationEl.textContent=
-        formatTime(clip.duration);
+<span class="animName">
+${escapeHTML(
+clip.name ||
+"Animation "+(index+1)
+)}
+</span>
 
-    timelineRange.max=clip.duration;
+<span class="badge">
+${clip.duration.toFixed(2)}s
+</span>
 
-    clip.style="";
-    playing=true;
+`;
+
+
+div.onclick=()=>{
+
+document
+.querySelectorAll(".anim")
+.forEach(
+x=>
+x.classList.remove("active")
+);
+
+div.classList.add("active");
+
+playAnimation(clip);
+
+};
+
+
+animList.appendChild(div);
+
+});
+
+
+const first=
+document.querySelector(".anim");
+
+if(first){
+
+first.click();
+
 }
+
+}
+
+
+/* =========================================================
+ANIMATION PLAY
+========================================================= */
+
+function playAnimation(
+clip
+){
+
+if(!mixer)return;
+
+
+if(activeAction){
+
+activeAction.stop();
+
+}
+
+
+activeAnimation=clip;
+
+
+activeAction=
+mixer.clipAction(
+clip
+);
+
+
+activeAction.reset();
+
+activeAction.enabled=true;
+
+activeAction.setLoop(
+THREE.LoopRepeat,
+Infinity
+);
+
+activeAction.timeScale=
+Number(speed.value);
+
+activeAction.play();
+
+
+playing=true;
+
+
+durationEl.textContent=
+formatTime(
+clip.duration
+);
+
+timelineRange.max=
+clip.duration;
+
+clip.style="";
+
+
+setStatus(
+"Animation: "+
+clip.name
+);
+
+}
+
+
+/* =========================================================
+ANIMATION STOP
+========================================================= */
 
 function stopAnimation(){
 
-    if(!activeAction)return;
+if(activeAction){
 
-    activeAction.stop();
+activeAction.stop();
 
-    if(mixer){
-        mixer.setTime(0);
-    }
-
-    timelineRange.value=0;
-
-    updateTimeline();
 }
+
+
+if(mixer){
+
+mixer.stopAllAction();
+
+mixer.setTime(0);
+
+}
+
+
+activeAction=null;
+
+playing=false;
+
+timelineRange.value=0;
+
+updateTimeline();
+
+}
+
+
+/* =========================================================
+BUTTONS
+========================================================= */
 
 animPlay.onclick=()=>{
 
-    if(activeAction){
-        activeAction.paused=false;
-        activeAction.play();
-        playing=true;
-    }
+if(activeAction){
+
+activeAction.paused=false;
+
+activeAction.play();
+
+playing=true;
+
+}
+
 };
+
 
 animPause.onclick=()=>{
 
-    if(activeAction){
-        activeAction.paused=true;
-        playing=false;
-    }
+if(activeAction){
+
+activeAction.paused=true;
+
+playing=false;
+
+}
+
 };
+
 
 animStop.onclick=()=>{
 
-    stopAnimation();
-    playing=false;
+stopAnimation();
+
 };
+
 
 playBtn.onclick=()=>{
 
-    if(activeAction){
+if(activeAction){
 
-        activeAction.paused=!activeAction.paused;
+activeAction.paused=
+!activeAction.paused;
 
-        playing=!activeAction.paused;
+playing=
+!activeAction.paused;
 
-    }
+}
 
-    if(mediaType==="video"){
+if(mediaType==="video"){
 
-        if(video.paused){
-            video.play();
-        }else{
-            video.pause();
-        }
-    }
+if(video.paused){
+
+video.play();
+
+}else{
+
+video.pause();
+
+}
+
+}
+
 };
+
 
 stopBtn.onclick=()=>{
 
-    stopAnimation();
+stopAnimation();
 
-    if(mediaType==="video"){
-        video.pause();
-        video.currentTime=0;
-    }
+if(mediaType==="video"){
 
-    playing=false;
+video.pause();
+
+video.currentTime=0;
+
+}
+
+playing=false;
+
 };
 
+
+timelinePlay.onclick=()=>{
+
+if(!activeAction)return;
+
+activeAction.paused=
+!activeAction.paused;
+
+playing=
+!activeAction.paused;
+
+};
+
+
 /* =========================================================
-   ANIMATIONS SPEED
+SPEED
 ========================================================= */
 
-speed.addEventListener("input",()=>{
+speed.addEventListener(
+"input",
+()=>{
 
-    const v=Number(speed.value);
+const v=
+Number(speed.value);
 
-    speedText.textContent=v.toFixed(2)+"x";
+speedText.textContent=
+v.toFixed(2)+"x";
 
-    if(activeAction){
-        activeAction.timeScale=v;
-    }
+
+if(activeAction){
+
+activeAction.timeScale=v;
+
+}
+
 });
 
+
 /* =========================================================
-   MEDIA IMPORT
+MEDIA IMPORT
 ========================================================= */
 
-mediaInput.addEventListener("change",e=>{
+mediaInput.addEventListener(
+"change",
+e=>{
 
-    const file=e.target.files[0];
+const file=
+e.target.files[0];
 
-    if(!file)return;
+if(!file)return;
 
-    const url=URL.createObjectURL(file);
 
-    mediaLoaded=true;
+const url=
+URL.createObjectURL(file);
 
-    empty.style.display="none";
 
-    if(file.type.startsWith("video/")){
+mediaLoaded=true;
 
-        mediaType="video";
+empty.style.display="none";
 
-        image.style.display="none";
 
-        video.style.display="block";
+if(file.type.startsWith("video/")){
 
-        video.src=url;
+mediaType="video";
 
-        video.load();
+image.style.display="none";
 
-        video.onloadedmetadata=()=>{
+video.style.display="block";
 
-            fitMedia();
+video.src=url;
 
-            durationEl.textContent=
-                formatTime(video.duration);
-        };
+video.load();
 
-    }else{
+video.onloadedmetadata=()=>{
 
-        mediaType="image";
+fitMedia();
 
-        video.pause();
-        video.style.display="none";
+durationEl.textContent=
+formatTime(
+video.duration
+);
 
-        image.style.display="block";
+};
 
-        image.src=url;
+}else{
 
-        image.onload=fitMedia;
-    }
+mediaType="image";
 
-    projectStatus.innerHTML=
-        "Hintergrund: <span class='green'>geladen</span>"+
-        "<br>FBX: "+
-        (model ? "<span class='green'>geladen</span>":"nicht geladen");
+video.pause();
+
+video.style.display="none";
+
+image.style.display="block";
+
+image.src=url;
+
+image.onload=
+fitMedia;
+
+}
+
+
+projectStatus.innerHTML=
+"Hintergrund: <span class='green'>geladen</span>"+
+"<br>"+
+"3D-Modell: "+
+(
+model
+?
+"<span class='green'>geladen</span>"
+:
+"nicht geladen"
+);
+
 });
 
+
 /* =========================================================
-   MEDIA FIT
+MEDIA FIT
 ========================================================= */
 
 function fitMedia(){
 
-    const w=stage.clientWidth;
-    const h=stage.clientHeight;
+const w=stage.clientWidth;
+const h=stage.clientHeight;
 
-    let mw=0;
-    let mh=0;
+let mw=0;
+let mh=0;
 
-    if(mediaType==="image"){
 
-        mw=image.naturalWidth;
-        mh=image.naturalHeight;
+if(mediaType==="image"){
 
-    }else if(mediaType==="video"){
+mw=image.naturalWidth;
+mh=image.naturalHeight;
 
-        mw=video.videoWidth;
-        mh=video.videoHeight;
-    }
+}else{
 
-    if(!mw||!mh)return;
+mw=video.videoWidth;
+mh=video.videoHeight;
 
-    const scale=Math.min(w/mw,h/mh);
-
-    const width=mw*scale;
-    const height=mh*scale;
-
-    const left=(w-width)/2;
-    const top=(h-height)/2;
-
-    const el=mediaType==="image"?image:video;
-
-    el.style.width=width+"px";
-    el.style.height=height+"px";
-    el.style.left=left+"px";
-    el.style.top=top+"px";
 }
 
+
+if(!mw||!mh)return;
+
+
+const s=
+Math.min(
+w/mw,
+h/mh
+);
+
+
+const width=mw*s;
+const height=mh*s;
+
+
+const left=
+(w-width)/2;
+
+const top=
+(h-height)/2;
+
+
+const el=
+mediaType==="image"
+?
+image
+:
+video;
+
+
+el.style.width=
+width+"px";
+
+el.style.height=
+height+"px";
+
+el.style.left=
+left+"px";
+
+el.style.top=
+top+"px";
+
+}
+
+
 /* =========================================================
-   VIDEO
+VIDEO
 ========================================================= */
 
 mediaPlay.onclick=()=>{
 
-    if(mediaType!=="video")return;
+if(mediaType!=="video")return;
 
-    if(video.paused){
 
-        video.play();
+if(video.paused){
 
-        mediaPlay.textContent="Ⅱ Pause";
+video.play();
 
-    }else{
+mediaPlay.textContent=
+"Ⅱ Pause";
 
-        video.pause();
+}else{
 
-        mediaPlay.textContent="▶ Video abspielen";
-    }
+video.pause();
+
+mediaPlay.textContent=
+"▶ Video abspielen";
+
+}
+
 };
 
-video.addEventListener("timeupdate",()=>{
 
-    if(!video.duration)return;
+video.addEventListener(
+"timeupdate",
+()=>{
 
-    mediaProgress.value=
-        video.currentTime/video.duration*100;
+if(!video.duration)return;
 
-    mediaTime.textContent=
-        formatTime(video.currentTime)+
-        " / "+
-        formatTime(video.duration);
+
+mediaProgress.value=
+video.currentTime/
+video.duration*
+100;
+
+
+mediaTime.textContent=
+formatTime(video.currentTime)
++
+" / "
++
+formatTime(video.duration);
 
 });
 
-mediaProgress.addEventListener("input",()=>{
 
-    if(mediaType==="video" && video.duration){
+mediaProgress.addEventListener(
+"input",
+()=>{
 
-        video.currentTime=
-            Number(mediaProgress.value)/100*
-            video.duration;
-    }
+if(
+mediaType==="video" &&
+video.duration
+){
+
+video.currentTime=
+Number(mediaProgress.value)/
+100*
+video.duration;
+
+}
+
 });
+
 
 /* =========================================================
-   DRAGGING
+DRAG MODELL
 ========================================================= */
 
-dragLayer.addEventListener("pointerdown",e=>{
+dragLayer.addEventListener(
+"pointerdown",
+e=>{
 
-    if(!model)return;
+if(!model)return;
 
-    dragging=true;
 
-    dragLayer.setPointerCapture(e.pointerId);
+dragging=true;
 
-    dragStart.x=e.clientX;
-    dragStart.y=e.clientY;
 
-    dragStart.modelX=modelScreenX;
-    dragStart.modelY=modelScreenY;
+dragLayer.setPointerCapture(
+e.pointerId
+);
 
-    dragLayer.style.cursor="grabbing";
+
+dragStart.x=e.clientX;
+
+dragStart.y=e.clientY;
+
+dragStart.modelX=
+modelScreenX;
+
+dragStart.modelY=
+modelScreenY;
+
+
+dragLayer.style.cursor=
+"grabbing";
+
 });
 
-dragLayer.addEventListener("pointermove",e=>{
 
-    if(!dragging || !model)return;
+dragLayer.addEventListener(
+"pointermove",
+e=>{
 
-    const dx=e.clientX-dragStart.x;
-    const dy=e.clientY-dragStart.y;
+if(!dragging||!model)return;
 
-    /*
-       Position wird direkt in Bildschirmkoordinaten
-       verändert.
 
-       KEIN 3D-Raycasting.
-       KEIN Perspektivproblem.
-       KEIN Schweben.
-    */
+const dx=
+e.clientX-
+dragStart.x;
 
-    modelScreenX=
-        dragStart.modelX+
-        dx/editorZoom;
+const dy=
+e.clientY-
+dragStart.y;
 
-    modelScreenY=
-        dragStart.modelY+
-        dy/editorZoom;
 
-    updateFields();
-    updateModel();
+modelScreenX=
+dragStart.modelX+
+dx/editorZoom;
+
+modelScreenY=
+dragStart.modelY+
+dy/editorZoom;
+
+
+updateFields();
+
+updateModel();
+
 });
 
-dragLayer.addEventListener("pointerup",e=>{
 
-    dragging=false;
+dragLayer.addEventListener(
+"pointerup",
+e=>{
 
-    try{
-        dragLayer.releasePointerCapture(e.pointerId);
-    }catch{}
+dragging=false;
 
-    dragLayer.style.cursor="default";
+try{
+
+dragLayer.releasePointerCapture(
+e.pointerId
+);
+
+}catch{}
+
+dragLayer.style.cursor=
+"default";
+
 });
 
-dragLayer.addEventListener("pointercancel",()=>{
 
-    dragging=false;
-    dragLayer.style.cursor="default";
+dragLayer.addEventListener(
+"pointercancel",
+()=>{
+
+dragging=false;
+
+dragLayer.style.cursor=
+"default";
+
 });
+
 
 /* =========================================================
-   MOUSE WHEEL = MODELLGRÖSSE
+SCROLL = GRÖSSE
 ========================================================= */
 
-dragLayer.addEventListener("wheel",e=>{
+dragLayer.addEventListener(
+"wheel",
+e=>{
 
-    if(!model)return;
+if(!model)return;
 
-    e.preventDefault();
 
-    let value=Number(scaleInput.value);
+e.preventDefault();
 
-    value+=e.deltaY<0 ? 2 : -2;
 
-    value=clamp(value,1,500);
+let value=
+Number(scaleInput.value);
 
-    scaleInput.value=value;
 
-    updateModel();
+value+=
+e.deltaY<0
+?
+2
+:
+-2;
 
-},{passive:false});
+
+value=
+clamp(
+value,
+1,
+500
+);
+
+
+scaleInput.value=
+value;
+
+
+updateModel();
+
+},
+{
+passive:false
+}
+);
+
 
 /* =========================================================
-   EDITOR ZOOM
+ZOOM
 ========================================================= */
 
 function setZoom(v){
 
-    editorZoom=clamp(v,.25,4);
+editorZoom=
+clamp(
+v,
+0.25,
+4
+);
 
-    zoomRange.value=editorZoom;
 
-    zoomText.textContent=
-        Math.round(editorZoom*100)+"%";
+zoomRange.value=
+editorZoom;
 
-    /*
-       Hintergrund + Modell werden gemeinsam skaliert.
 
-       Dadurch bleibt das Modell auf dem Bild
-       an derselben Stelle.
-    */
+zoomText.textContent=
+Math.round(
+editorZoom*100
+)+"%";
 
-    const transform=
-        `translate(-50%,-50%) scale(${editorZoom})`;
 
-    /*
-       Statt 3D-Weltverschiebung wird nur
-       die gesamte Editorfläche gezoomt.
-    */
+resizeEditor();
 
-    stage.style.transform="none";
-
-    /*
-       Das eigentliche Modell bleibt in seinen
-       2D-Koordinaten. Die Camera wird angepasst.
-    */
-
-    resizeEditor();
 }
 
-zoomRange.addEventListener("input",()=>{
-    setZoom(Number(zoomRange.value));
+
+zoomRange.addEventListener(
+"input",
+()=>{
+
+setZoom(
+Number(zoomRange.value)
+);
+
 });
 
-document.getElementById("zoomIn").onclick=()=>{
-    setZoom(editorZoom+.1);
-};
 
-document.getElementById("zoomOut").onclick=()=>{
-    setZoom(editorZoom-.1);
-};
+document.getElementById(
+"zoomIn"
+).onclick=
+()=>setZoom(
+editorZoom+.1
+);
 
-document.getElementById("zoom100").onclick=()=>{
-    setZoom(1);
-};
 
-/* =========================================================
-   RESET VIEW
-========================================================= */
+document.getElementById(
+"zoomOut"
+).onclick=
+()=>setZoom(
+editorZoom-.1
+);
 
-document.getElementById("resetView").onclick=()=>{
 
-    setZoom(1);
+document.getElementById(
+"zoom100"
+).onclick=
+()=>setZoom(1);
 
-    if(model){
-        centerModel();
-    }
-
-};
 
 /* =========================================================
-   TIMELINE
+RESET
 ========================================================= */
 
-timelineRange.addEventListener("input",()=>{
+document.getElementById(
+"resetView"
+).onclick=()=>{
 
-    if(!activeAction)return;
+setZoom(1);
 
-    const t=Number(timelineRange.value);
+if(model){
 
-    activeAction.paused=true;
+centerModel();
 
-    mixer.setTime(t);
+}
 
-    updateTimeline();
+};
+
+
+/* =========================================================
+TIMELINE
+========================================================= */
+
+timelineRange.addEventListener(
+"input",
+()=>{
+
+if(!activeAction||!mixer)return;
+
+
+const t=
+Number(
+timelineRange.value
+);
+
+
+activeAction.paused=true;
+
+mixer.setTime(t);
+
+updateTimeline();
+
 });
+
 
 function updateTimeline(){
 
-    if(!activeAnimation || !mixer)return;
+if(
+!activeAnimation||
+!mixer
+)return;
 
-    const t=mixer.time % activeAnimation.duration;
 
-    timelineRange.value=t;
+const duration=
+activeAnimation.duration;
 
-    currentTime.textContent=formatTime(t);
 
-    const area=timelineArea.clientWidth;
+if(!duration)return;
 
-    const duration=activeAnimation.duration || 1;
 
-    const x=(t/duration)*area;
+const t=
+mixer.time%duration;
 
-    playhead.style.left=x+"px";
+
+timelineRange.value=t;
+
+
+currentTime.textContent=
+formatTime(t);
+
+
+const area=
+document.getElementById(
+"timelineArea"
+);
+
+
+const x=
+(t/duration)*
+area.clientWidth;
+
+
+playhead.style.left=
+x+"px";
+
 }
 
+
 /* =========================================================
-   RENDER LOOP
+RENDER
 ========================================================= */
 
-let lastTime=performance.now();
+let lastTime=
+performance.now();
+
 
 function render(){
 
-    requestAnimationFrame(render);
+requestAnimationFrame(
+render
+);
 
-    const now=performance.now();
 
-    const delta=Math.min(
-        (now-lastTime)/1000,
-        .05
-    );
+const now=
+performance.now();
 
-    lastTime=now;
 
-    if(mixer && playing){
+const delta=
+Math.min(
+(now-lastTime)/1000,
+0.05
+);
 
-        mixer.update(delta);
 
-        updateTimeline();
-    }
+lastTime=now;
 
-    renderer.render(scene,camera);
+
+if(
+mixer &&
+playing
+){
+
+mixer.update(delta);
+
+updateTimeline();
+
 }
+
+
+renderer.render(
+scene,
+camera
+);
+
+}
+
 
 render();
 
-/* =========================================================
-   WEBM EXPORT
-========================================================= */
-
-const exportBtn=document.getElementById("exportBtn");
-
-exportBtn.onclick=async()=>{
-
-    if(!mediaLoaded){
-
-        alert("Bitte zuerst ein Bild oder Video laden.");
-
-        return;
-    }
-
-    /*
-       Browser-Kompatibilität:
-       Die Ausgabe wird über eine Canvas-Aufnahme erzeugt.
-    */
-
-    const w=stage.clientWidth;
-    const h=stage.clientHeight;
-
-    const canvas=document.createElement("canvas");
-
-    canvas.width=Math.max(2,Math.floor(w));
-    canvas.height=Math.max(2,Math.floor(h));
-
-    const ctx=canvas.getContext("2d");
-
-    const stream=canvas.captureStream(30);
-
-    if(mediaType==="video"){
-
-        try{
-
-            const mediaStream=video.captureStream();
-
-            for(const track of mediaStream.getAudioTracks()){
-
-                stream.addTrack(track);
-            }
-
-        }catch(err){
-
-            console.warn(
-                "Audio Capture nicht verfügbar",
-                err
-            );
-        }
-    }
-
-    let mime="video/webm;codecs=vp9";
-
-    if(!MediaRecorder.isTypeSupported(mime)){
-
-        mime="video/webm";
-    }
-
-    const recorder=new MediaRecorder(
-        stream,
-        {
-            mimeType:mime,
-            videoBitsPerSecond:8000000
-        }
-    );
-
-    const chunks=[];
-
-    recorder.ondataavailable=e=>{
-
-        if(e.data.size){
-            chunks.push(e.data);
-        }
-    };
-
-    recorder.onstop=()=>{
-
-        const blob=new Blob(
-            chunks,
-            {type:"video/webm"}
-        );
-
-        const url=URL.createObjectURL(blob);
-
-        const a=document.createElement("a");
-
-        a.href=url;
-        a.download="GhostFX-Pro-Export.webm";
-
-        document.body.appendChild(a);
-
-        a.click();
-
-        a.remove();
-
-        setTimeout(()=>{
-            URL.revokeObjectURL(url);
-        },1000);
-
-        exportBtn.textContent="⬇ WebM";
-    };
-
-    exportBtn.textContent="● Aufnahme...";
-
-    /*
-       Startzeit.
-    */
-
-    if(mediaType==="video"){
-
-        video.currentTime=0;
-        await video.play().catch(()=>{});
-    }
-
-    if(activeAction){
-
-        activeAction.reset();
-        activeAction.play();
-        activeAction.paused=false;
-        playing=true;
-    }
-
-    recorder.start();
-
-    const start=performance.now();
-
-    function capture(){
-
-        if(recorder.state!=="recording")return;
-
-        /*
-           Hintergrund zeichnen.
-        */
-
-        ctx.clearRect(0,0,w,h);
-
-        if(mediaType==="video"){
-
-            if(video.readyState>=2){
-
-                drawContain(
-                    ctx,
-                    video,
-                    w,
-                    h
-                );
-            }
-
-        }else if(mediaType==="image"){
-
-            drawContain(
-                ctx,
-                image,
-                w,
-                h
-            );
-        }
-
-        /*
-           Transparentes Three.js Rendering
-           direkt über den Hintergrund.
-        */
-
-        ctx.drawImage(
-            renderer.domElement,
-            0,
-            0,
-            w,
-            h
-        );
-
-        /*
-           Stoppt automatisch am Videoende.
-        */
-
-        if(
-            mediaType==="video" &&
-            video.ended
-        ){
-
-            recorder.stop();
-
-            return;
-        }
-
-        /*
-           Bei Bild:
-           maximal 10 Sekunden Export.
-        */
-
-        if(
-            mediaType==="image" &&
-            performance.now()-start>=10000
-        ){
-
-            recorder.stop();
-
-            return;
-        }
-
-        requestAnimationFrame(capture);
-    }
-
-    capture();
-};
 
 /* =========================================================
-   CONTAIN DRAW
+WEBM EXPORT
 ========================================================= */
 
-function drawContain(ctx,source,w,h){
+document.getElementById(
+"exportBtn"
+).onclick=
+async()=>{
 
-    const sw=source.videoWidth || source.naturalWidth;
-    const sh=source.videoHeight || source.naturalHeight;
+if(!mediaLoaded){
 
-    if(!sw||!sh)return;
+alert(
+"Bitte zuerst ein Bild oder Video laden."
+);
 
-    const scale=Math.min(
-        w/sw,
-        h/sh
-    );
+return;
 
-    const dw=sw*scale;
-    const dh=sh*scale;
-
-    const x=(w-dw)/2;
-    const y=(h-dh)/2;
-
-    ctx.fillStyle="#000";
-    ctx.fillRect(0,0,w,h);
-
-    ctx.drawImage(
-        source,
-        x,
-        y,
-        dw,
-        dh
-    );
 }
 
+
+const w=
+stage.clientWidth;
+
+const h=
+stage.clientHeight;
+
+
+const canvas=
+document.createElement("canvas");
+
+canvas.width=
+Math.max(
+2,
+Math.floor(w)
+);
+
+canvas.height=
+Math.max(
+2,
+Math.floor(h)
+);
+
+
+const ctx=
+canvas.getContext("2d");
+
+
+const stream=
+canvas.captureStream(30);
+
+
+if(mediaType==="video"){
+
+try{
+
+const mediaStream=
+video.captureStream();
+
+
+for(
+const track of
+mediaStream.getAudioTracks()
+){
+
+stream.addTrack(track);
+
+}
+
+}catch{}
+
+}
+
+
+let mime=
+"video/webm;codecs=vp9";
+
+
+if(
+!MediaRecorder.isTypeSupported(
+mime
+)
+){
+
+mime="video/webm";
+
+}
+
+
+const recorder=
+new MediaRecorder(
+stream,
+{
+mimeType:mime,
+videoBitsPerSecond:8000000
+}
+);
+
+
+const chunks=[];
+
+
+recorder.ondataavailable=
+e=>{
+
+if(e.data.size){
+
+chunks.push(e.data);
+
+}
+
+};
+
+
+recorder.onstop=()=>{
+
+const blob=
+new Blob(
+chunks,
+{
+type:"video/webm"
+}
+);
+
+
+const url=
+URL.createObjectURL(
+blob
+);
+
+
+const a=
+document.createElement("a");
+
+a.href=url;
+
+a.download=
+"GhostFX-Pro-Export.webm";
+
+a.click();
+
+
+setTimeout(
+()=>{
+URL.revokeObjectURL(url);
+},
+2000
+);
+
+};
+
+
+if(mediaType==="video"){
+
+video.currentTime=0;
+
+await video.play().catch(
+()=>{}
+);
+
+}
+
+
+if(activeAction){
+
+activeAction.reset();
+
+activeAction.play();
+
+activeAction.paused=false;
+
+playing=true;
+
+}
+
+
+recorder.start();
+
+
+const start=
+performance.now();
+
+
+function capture(){
+
+if(
+recorder.state!=="recording"
+)return;
+
+
+ctx.clearRect(
+0,
+0,
+w,
+h
+);
+
+
+if(mediaType==="video"){
+
+if(video.readyState>=2){
+
+drawContain(
+ctx,
+video,
+w,
+h
+);
+
+}
+
+}else{
+
+drawContain(
+ctx,
+image,
+w,
+h
+);
+
+}
+
+
+ctx.drawImage(
+renderer.domElement,
+0,
+0,
+w,
+h
+);
+
+
+if(
+mediaType==="video" &&
+video.ended
+){
+
+recorder.stop();
+
+return;
+
+}
+
+
+if(
+mediaType==="image" &&
+performance.now()-start>=10000
+){
+
+recorder.stop();
+
+return;
+
+}
+
+
+requestAnimationFrame(
+capture
+);
+
+}
+
+
+capture();
+
+};
+
+
 /* =========================================================
-   TIMELINE VIDEO SYNC
+DRAW CONTAIN
 ========================================================= */
 
-video.addEventListener("timeupdate",()=>{
+function drawContain(
+ctx,
+source,
+w,
+h
+){
 
-    if(mediaType!=="video")return;
+const sw=
+source.videoWidth ||
+source.naturalWidth;
 
-    const t=video.currentTime;
+const sh=
+source.videoHeight ||
+source.naturalHeight;
 
-    if(!activeAnimation)return;
 
-    /*
-       Wenn Video läuft, läuft auch die Animation.
-    */
+if(!sw||!sh)return;
 
-    if(
-        activeAction &&
-        !video.paused
-    ){
 
-        activeAction.paused=false;
-        playing=true;
-    }
-});
+const s=
+Math.min(
+w/sw,
+h/sh
+);
+
+
+const dw=
+sw*s;
+
+const dh=
+sh*s;
+
+
+const x=
+(w-dw)/2;
+
+const y=
+(h-dh)/2;
+
+
+ctx.fillStyle="#000";
+
+ctx.fillRect(
+0,
+0,
+w,
+h
+);
+
+
+ctx.drawImage(
+source,
+x,
+y,
+dw,
+dh
+);
+
+}
+
 
 /* =========================================================
-   SPACEBAR
+SPACE
 ========================================================= */
 
-window.addEventListener("keydown",e=>{
+window.addEventListener(
+"keydown",
+e=>{
 
-    if(
-        e.code==="Space" &&
-        document.activeElement.tagName!=="INPUT"
-    ){
+if(
+e.code!=="Space" ||
+document.activeElement.tagName==="INPUT"
+)return;
 
-        e.preventDefault();
 
-        if(mediaType==="video"){
+e.preventDefault();
 
-            if(video.paused){
 
-                video.play();
+if(mediaType==="video"){
 
-            }else{
+if(video.paused){
 
-                video.pause();
-            }
-        }
+video.play();
 
-        if(activeAction){
+}else{
 
-            activeAction.paused=
-                !activeAction.paused;
+video.pause();
 
-            playing=!activeAction.paused;
-        }
-    }
+}
+
+}
+
+
+if(activeAction){
+
+activeAction.paused=
+!activeAction.paused;
+
+playing=
+!activeAction.paused;
+
+}
+
 });
 
+
 /* =========================================================
-   START
+HELPER
+========================================================= */
+
+function setStatus(text){
+
+const el=
+document.getElementById(
+"projectStatus"
+);
+
+}
+
+
+function setModelLoading(){
+
+modelInfo.innerHTML=
+"<span class='green'>Modell wird geladen...</span>";
+
+}
+
+
+function escapeHTML(text){
+
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+START
 ========================================================= */
 
 resizeEditor();
