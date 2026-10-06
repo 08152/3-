@@ -2,902 +2,1044 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>GHOST 3D VIDEO EDITOR</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FBX Video Editor</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b0d12;color:#eee;font-family:Arial,sans-serif}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101114;color:#fff;font-family:Arial}
 button,input,select{font:inherit}
-button{background:#191d26;color:#fff;border:1px solid #303746;border-radius:7px;padding:8px 12px;cursor:pointer}
-button:hover{background:#252b38}
-button.primary{background:#5b38e8;border-color:#795cf0}
-button.danger{background:#8d2430}
-input,select{background:#11151c;color:#fff;border:1px solid #303746;border-radius:5px;padding:7px}
-.app{height:100%;display:grid;grid-template-rows:48px 1fr 255px}
-.topbar{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#11141b;border-bottom:1px solid #292e39}
-.logo{font-weight:bold;color:#9e88ff;margin-right:10px;letter-spacing:1px}
-.spacer{flex:1}
-.main{min-height:0;display:grid;grid-template-columns:260px 1fr 280px}
-.panel{background:#11141b;border-right:1px solid #292e39;overflow:auto}
-.panel.right{border-right:0;border-left:1px solid #292e39}
-.section{padding:12px;border-bottom:1px solid #292e39}
-.section h3{font-size:12px;text-transform:uppercase;color:#8992a4;margin:0 0 10px}
-.filebox{border:1px dashed #596174;border-radius:8px;padding:18px;text-align:center;cursor:pointer}
-.filebox:hover{background:#171b24}
-.scene-list{margin-top:10px}
-.item{padding:9px;border-radius:6px;margin:4px 0;background:#171b23;cursor:pointer}
-.item.active{background:#392a72}
-.preview{position:relative;background:#080a0e;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#view{width:100%;height:100%;display:block}
-.preview-ui{position:absolute;left:12px;top:10px;background:#0009;border:1px solid #333b;padding:6px 9px;border-radius:6px;font-size:12px}
-.center-controls{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px;background:#0d1017dd;padding:7px;border:1px solid #303746;border-radius:9px}
-.prop-row{display:grid;grid-template-columns:55px 1fr 1fr 1fr;gap:4px;margin:5px 0;align-items:center}
-.prop-row label{font-size:11px;color:#aab1bf}
-.prop-row input{width:100%;min-width:0}
-.timeline{background:#0d1016;border-top:1px solid #303746;display:grid;grid-template-rows:38px 1fr}
-.timelinebar{display:flex;align-items:center;gap:7px;padding:5px 9px;border-bottom:1px solid #292e39}
-.time{font-family:monospace;min-width:100px}
-.tracks{position:relative;overflow:auto;background:#090b10}
-.ruler{height:27px;position:sticky;top:0;z-index:5;background:#11151d;border-bottom:1px solid #303746;min-width:1200px}
-.tick{position:absolute;top:0;height:100%;border-left:1px solid #303746;color:#778094;font-size:9px;padding-left:3px}
-.track{height:52px;position:relative;border-bottom:1px solid #222833;min-width:1200px}
-.track-label{position:sticky;left:0;z-index:3;width:105px;height:52px;background:#12161e;border-right:1px solid #303746;padding:17px 7px;font-size:11px}
-.clip{position:absolute;top:6px;height:40px;border-radius:5px;background:#4732a5;border:1px solid #7761db;padding:12px 8px;font-size:11px;overflow:hidden;white-space:nowrap}
-.clip.video{background:#254d79}
-.clip.audio{background:#315d4a}
-.clip.model{background:#6b3c8e}
-.playhead{position:absolute;top:0;bottom:0;width:2px;background:#ff435b;z-index:10;pointer-events:none}
-.playhead:before{content:"";position:absolute;top:0;left:-5px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #ff435b}
-.key{position:absolute;top:16px;width:10px;height:10px;background:#ffd43b;transform:rotate(45deg);border-radius:2px;z-index:4}
-.small{font-size:11px;color:#8992a4}
-.row{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
-.full{width:100%}
+button{background:#242832;color:white;border:1px solid #444b58;border-radius:6px;padding:9px 14px;cursor:pointer}
+button:hover{background:#343a46}
+button:active{transform:scale(.98)}
+.primary{background:#6646e8;border-color:#8065ef}
+.top{
+height:52px;background:#17191f;border-bottom:1px solid #30343d;
+display:flex;align-items:center;gap:8px;padding:7px 10px
+}
+.logo{font-weight:bold;margin-right:15px;color:#a58cff}
+.main{height:calc(100% - 52px);display:grid;grid-template-rows:minmax(0,1fr) 190px}
+.preview{position:relative;background:#08090c}
+canvas{width:100%;height:100%;display:block}
+.hud{
+position:absolute;top:10px;left:10px;background:#000b;padding:8px 12px;
+border-radius:6px;font-size:12px;color:#bfc5d1
+}
+.controls{
+position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+display:flex;gap:6px;background:#1117;padding:7px;border-radius:9px
+}
+.timeline{
+background:#15171d;border-top:1px solid #343943;
+position:relative;overflow:auto
+}
+.ruler{
+height:30px;position:relative;border-bottom:1px solid #343943;
+min-width:1200px;background:#191c23
+}
+.tick{
+position:absolute;top:0;height:30px;border-left:1px solid #454b58;
+font-size:10px;color:#8d95a5;padding-left:3px
+}
+.track{
+height:70px;position:relative;border-bottom:1px solid #292d35;
+min-width:1200px
+}
+.label{
+position:sticky;left:0;top:0;z-index:5;
+width:110px;height:70px;background:#181b22;
+border-right:1px solid #343943;padding:26px 8px;font-size:11px
+}
+.clip{
+position:absolute;left:115px;top:10px;height:50px;
+border-radius:7px;padding:17px 10px;
+background:#4a329b;border:1px solid #846ce0;
+font-size:12px;overflow:hidden;white-space:nowrap
+}
+.clip.video{background:#24537b}
+.playhead{
+position:absolute;top:0;bottom:0;width:2px;background:#ff4058;
+z-index:20;pointer-events:none
+}
+.playhead:before{
+content:"";position:absolute;top:0;left:-5px;
+border-left:6px solid transparent;border-right:6px solid transparent;
+border-top:8px solid #ff4058
+}
+#fileFBX,#fileVideo{display:none}
+.modal{
+position:absolute;inset:0;background:#000b;display:none;
+align-items:center;justify-content:center;z-index:100
+}
+.modalBox{
+background:#181b22;border:1px solid #454b58;border-radius:10px;
+padding:20px;min-width:280px
+}
+.row{display:flex;gap:7px;align-items:center}
 </style>
 </head>
 
 <body>
-<div class="app">
 
-<header class="topbar">
-  <div class="logo">GHOST 3D VIDEO EDITOR</div>
-  <button id="importFBX">＋ FBX</button>
-  <button id="importVideo">＋ Video</button>
-  <button id="importImage">＋ Bild</button>
-  <button id="importAudio">＋ Audio</button>
-  <button id="addText">＋ Text</button>
-  <div class="spacer"></div>
-  <button id="newProject">Neu</button>
-  <button id="exportScene">Szene JSON</button>
-  <button class="primary" id="exportWebM">WEBM EXPORT</button>
+<header class="top">
+<div class="logo">FBX VIDEO EDITOR</div>
+
+<button id="fbxButton">＋ FBX</button>
+<button id="videoButton">＋ VIDEO</button>
+<button id="playButton">▶</button>
+<button id="stopButton">■</button>
+
+<div style="flex:1"></div>
+
+<span id="time">00:00:00.000</span>
+
+<button id="exportButton" class="primary">WEBM EXPORT</button>
 </header>
 
-<main class="main">
+<div class="main">
 
-<aside class="panel">
-  <div class="section">
-    <h3>Medien</h3>
-    <div class="filebox" id="dropZone">
-      Dateien hier hineinziehen<br>
-      <span class="small">FBX / Video / Bild / Audio</span>
-    </div>
-    <input id="fbxFile" type="file" accept=".fbx" hidden>
-    <input id="videoFile" type="file" accept="video/*" hidden>
-    <input id="imageFile" type="file" accept="image/*" hidden>
-    <input id="audioFile" type="file" accept="audio/*" hidden>
-  </div>
+<div class="preview">
+<canvas id="canvas"></canvas>
+<div class="hud" id="hud">Noch kein Modell geladen</div>
 
-  <div class="section">
-    <h3>Szene</h3>
-    <div id="sceneList"></div>
-  </div>
+<div class="controls">
+<button id="rewind">⏮</button>
+<button id="centerPlay">▶</button>
+<button id="forward">⏭</button>
+</div>
+</div>
 
-  <div class="section">
-    <h3>Animation</h3>
-    <select id="animationSelect" class="full">
-      <option>Keine Animation</option>
-    </select>
-    <div class="row" style="margin-top:7px">
-      <button id="playAnim">▶ Animation</button>
-      <button id="stopAnim">■</button>
-    </div>
-  </div>
+<div class="timeline" id="timeline">
 
-  <div class="section">
-    <h3>Keyframes</h3>
-    <div class="row">
-      <button id="addKey" class="primary">◆ Keyframe</button>
-      <button id="clearKeys">Alle löschen</button>
-    </div>
-    <div class="small" style="margin-top:7px">
-      Position, Rotation und Größe können über die Timeline animiert werden.
-    </div>
-  </div>
-</aside>
+<div class="ruler" id="ruler"></div>
 
-<section class="preview">
-  <canvas id="view"></canvas>
-  <div class="preview-ui" id="status">Keine Szene</div>
+<div class="track" id="modelTrack">
+<div class="label">3D / FBX</div>
+</div>
 
-  <div class="center-controls">
-    <button id="back">⏮</button>
-    <button id="play">▶</button>
-    <button id="next">⏭</button>
-    <button id="resetCamera">Kamera</button>
-  </div>
-</section>
+<div class="track" id="videoTrack">
+<div class="label">VIDEO</div>
+</div>
 
-<aside class="panel right">
-  <div class="section">
-    <h3>Transform</h3>
-
-    <div class="prop-row">
-      <label>Pos</label>
-      <input id="px" type="number" step=".01" placeholder="X">
-      <input id="py" type="number" step=".01" placeholder="Y">
-      <input id="pz" type="number" step=".01" placeholder="Z">
-    </div>
-
-    <div class="prop-row">
-      <label>Rot</label>
-      <input id="rx" type="number" step="1" placeholder="X">
-      <input id="ry" type="number" step="1" placeholder="Y">
-      <input id="rz" type="number" step="1" placeholder="Z">
-    </div>
-
-    <div class="prop-row">
-      <label>Scale</label>
-      <input id="sx" type="number" step=".01" min=".001" placeholder="X">
-      <input id="sy" type="number" step=".01" min=".001" placeholder="Y">
-      <input id="sz" type="number" step=".01" min=".001" placeholder="Z">
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Projekt</h3>
-    <div class="prop-row">
-      <label>FPS</label>
-      <input id="fps" type="number" min="1" max="60" value="30">
-      <span></span><span></span>
-    </div>
-    <div class="prop-row">
-      <label>Breite</label>
-      <input id="width" type="number" value="1280">
-      <span></span><span></span>
-    </div>
-    <div class="prop-row">
-      <label>Höhe</label>
-      <input id="height" type="number" value="720">
-      <span></span><span></span>
-    </div>
-    <div class="prop-row">
-      <label>Dauer</label>
-      <input id="duration" type="number" step=".1" value="10">
-      <span>s</span><span></span>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Timeline</h3>
-    <div class="small">Zeitposition</div>
-    <input id="timeInput" type="number" step=".01" min="0" value="0" class="full">
-  </div>
-</aside>
-
-</main>
-
-<section class="timeline">
-  <div class="timelinebar">
-    <button id="timelinePlay">▶</button>
-    <div class="time" id="timecode">00:00:00.000</div>
-    <span class="small">Timeline</span>
-    <div class="spacer"></div>
-    <button id="zoomOut">−</button>
-    <button id="zoomIn">＋</button>
-  </div>
-
-  <div class="tracks" id="tracks">
-    <div class="ruler" id="ruler"></div>
-
-    <div class="track" id="modelTrack">
-      <div class="track-label">3D MODEL</div>
-    </div>
-
-    <div class="track" id="videoTrack">
-      <div class="track-label">VIDEO</div>
-    </div>
-
-    <div class="track" id="audioTrack">
-      <div class="track-label">AUDIO</div>
-    </div>
-
-    <div class="track" id="textTrack">
-      <div class="track-label">TEXT</div>
-    </div>
-
-    <div class="playhead" id="playhead"></div>
-  </div>
-</section>
+<div class="playhead" id="playhead"></div>
 
 </div>
 
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
-import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
-import {FBXLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/FBXLoader.js";
+</div>
 
-const canvas=document.getElementById("view");
+<input id="fileFBX" type="file" accept=".fbx">
+<input id="fileVideo" type="file" accept="video/*">
+
+<div class="modal" id="exportModal">
+<div class="modalBox">
+<h3>WEBM wird erstellt</h3>
+<div id="exportProgress">0%</div>
+<br>
+<div style="width:260px;height:8px;background:#30343d;border-radius:5px">
+<div id="progressBar" style="height:100%;width:0%;background:#7657ed;border-radius:5px"></div>
+</div>
+</div>
+</div>
+
+<script type="module">
+
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+import {OrbitControls} from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
+
+import {FBXLoader} from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/FBXLoader.js";
+
+
+/* =========================
+   THREE
+========================= */
+
+const canvas=document.getElementById("canvas");
+
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x10141c);
+scene.background=new THREE.Color(0x11151c);
 
 const camera=new THREE.PerspectiveCamera(
-  45,
-  canvas.clientWidth/canvas.clientHeight,
-  .01,
-  5000
+45,
+1,
+0.01,
+5000
 );
+
 camera.position.set(4,3,7);
 
 const renderer=new THREE.WebGLRenderer({
-  canvas,
-  antialias:true,
-  preserveDrawingBuffer:true
+canvas,
+antialias:true,
+preserveDrawingBuffer:true
 });
+
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 
 const controls=new OrbitControls(camera,canvas);
 controls.enableDamping=true;
 
-scene.add(new THREE.HemisphereLight(0xffffff,0x334455,2));
+scene.add(
+new THREE.HemisphereLight(
+0xffffff,
+0x344455,
+2.5
+)
+);
 
-const keyLight=new THREE.DirectionalLight(0xffffff,3);
-keyLight.position.set(5,8,5);
-scene.add(keyLight);
+const light=new THREE.DirectionalLight(
+0xffffff,
+3
+);
 
-const grid=new THREE.GridHelper(40,40,0x404857,0x242a35);
+light.position.set(5,8,5);
+scene.add(light);
+
+const grid=new THREE.GridHelper(
+40,
+40,
+0x444a55,
+0x252a32
+);
+
 scene.add(grid);
 
-const axes=new THREE.AxesHelper(2);
-scene.add(axes);
 
-let selected=null;
+/* =========================
+   VARIABLES
+========================= */
+
+let model=null;
 let mixer=null;
 let animations=[];
-let playing=false;
-let currentTime=0;
-let zoom=100;
-let keys=[];
-let importedVideo=null;
-let importedAudio=null;
-let textObjects=[];
-let objects=[];
+let currentAnimation=null;
 
-const $=id=>document.getElementById(id);
+let video=null;
+let videoTexture=null;
+let videoMesh=null;
+
+let playing=false;
+let time=0;
+let duration=10;
+
+let lastFrame=performance.now();
+
+const PIXELS_PER_SECOND=100;
+
+
+/* =========================
+   RESIZE
+========================= */
 
 function resize(){
-  const w=canvas.clientWidth;
-  const h=canvas.clientHeight;
-  if(!w||!h)return;
-  camera.aspect=w/h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w,h,false);
+
+const rect=canvas.getBoundingClientRect();
+
+renderer.setSize(
+rect.width,
+rect.height,
+false
+);
+
+camera.aspect=rect.width/rect.height;
+camera.updateProjectionMatrix();
+
 }
-addEventListener("resize",resize);
+
+window.addEventListener("resize",resize);
 resize();
 
-function render(){
-  renderer.render(scene,camera);
-}
-render();
 
-function addObject(obj,type,name){
-  obj.userData.editorType=type;
-  obj.userData.editorName=name;
-  scene.add(obj);
-  objects.push(obj);
-  selected=obj;
-  refreshSceneList();
-  updateProperties();
-  updateStatus();
-}
+/* =========================
+   FBX
+========================= */
 
-function refreshSceneList(){
-  const list=$("sceneList");
-  list.innerHTML="";
-  objects.forEach((o,i)=>{
-    const div=document.createElement("div");
-    div.className="item"+(o===selected?" active":"");
-    div.textContent=(o.userData.editorName||o.type)+"  #"+(i+1);
-    div.onclick=()=>{
-      selected=o;
-      refreshSceneList();
-      updateProperties();
-    };
-    list.appendChild(div);
-  });
-}
+document.getElementById("fbxButton").onclick=()=>{
+document.getElementById("fileFBX").click();
+};
 
-function updateStatus(){
-  $("status").textContent=selected?
-    (selected.userData.editorName||"Objekt"):
-    "Keine Szene";
-}
+document.getElementById("fileFBX").onchange=e=>{
 
-function updateProperties(){
-  if(!selected)return;
+const file=e.target.files[0];
 
-  $("px").value=selected.position.x.toFixed(3);
-  $("py").value=selected.position.y.toFixed(3);
-  $("pz").value=selected.position.z.toFixed(3);
+if(!file)return;
 
-  $("rx").value=THREE.MathUtils.radToDeg(selected.rotation.x).toFixed(1);
-  $("ry").value=THREE.MathUtils.radToDeg(selected.rotation.y).toFixed(1);
-  $("rz").value=THREE.MathUtils.radToDeg(selected.rotation.z).toFixed(1);
+loadFBX(file);
 
-  $("sx").value=selected.scale.x.toFixed(3);
-  $("sy").value=selected.scale.y.toFixed(3);
-  $("sz").value=selected.scale.z.toFixed(3);
-}
+};
 
-function bindTransform(id,fn){
-  $(id).addEventListener("input",()=>{
-    if(!selected)return;
-    fn(Number($(id).value));
-    addKeyVisual();
-  });
-}
-
-bindTransform("px",v=>selected.position.x=v);
-bindTransform("py",v=>selected.position.y=v);
-bindTransform("pz",v=>selected.position.z=v);
-
-bindTransform("rx",v=>selected.rotation.x=THREE.MathUtils.degToRad(v));
-bindTransform("ry",v=>selected.rotation.y=THREE.MathUtils.degToRad(v));
-bindTransform("rz",v=>selected.rotation.z=THREE.MathUtils.degToRad(v));
-
-bindTransform("sx",v=>selected.scale.x=v);
-bindTransform("sy",v=>selected.scale.y=v);
-bindTransform("sz",v=>selected.scale.z=v);
 
 function loadFBX(file){
-  const url=URL.createObjectURL(file);
-  const loader=new FBXLoader();
 
-  loader.load(url,obj=>{
-    obj.traverse(c=>{
-      if(c.isMesh){
-        c.castShadow=true;
-        c.receiveShadow=true;
-        if(c.material){
-          c.material.needsUpdate=true;
-        }
-      }
-    });
+const url=URL.createObjectURL(file);
 
-    obj.name=file.name.replace(/\.fbx$/i,"");
-    addObject(obj,"model",obj.name);
+const loader=new FBXLoader();
 
-    animations=obj.animations||[];
-    mixer=animations.length?new THREE.AnimationMixer(obj):null;
+loader.load(
+url,
 
-    const select=$("animationSelect");
-    select.innerHTML="";
-    if(!animations.length){
-      select.innerHTML="<option>Keine Animation</option>";
-    }else{
-      animations.forEach((clip,i)=>{
-        const opt=document.createElement("option");
-        opt.value=i;
-        opt.textContent=clip.name||"Animation "+(i+1);
-        select.appendChild(opt);
-      });
-    }
+object=>{
 
-    if(animations.length){
-      playAnimation(0,false);
-    }
+if(model){
 
-    $("status").textContent=
-      file.name+" | "+animations.length+" Animation(en)";
+scene.remove(model);
 
-    URL.revokeObjectURL(url);
-  },undefined,err=>{
-    console.error(err);
-    alert("FBX konnte nicht geladen werden.");
-  });
 }
 
-function playAnimation(index,loop=true){
-  if(!mixer||!animations[index])return;
-  mixer.stopAllAction();
-  const action=mixer.clipAction(animations[index]);
-  action.reset();
-  action.setLoop(loop?THREE.LoopRepeat:THREE.LoopOnce,Infinity);
-  action.play();
-  playing=true;
+model=object;
+
+model.position.set(0,0,0);
+model.rotation.set(0,0,0);
+model.scale.set(1,1,1);
+
+model.traverse(child=>{
+
+if(child.isMesh){
+
+child.castShadow=true;
+child.receiveShadow=true;
+
+if(child.material){
+child.material.needsUpdate=true;
 }
 
-$("animationSelect").onchange=e=>{
-  playAnimation(Number(e.target.value),true);
-};
-
-$("playAnim").onclick=()=>{
-  playAnimation(Number($("animationSelect").value),true);
-};
-
-$("stopAnim").onclick=()=>{
-  if(mixer)mixer.stopAllAction();
-  playing=false;
-};
-
-$("importFBX").onclick=()=>$("fbxFile").click();
-$("fbxFile").onchange=e=>{
-  if(e.target.files[0])loadFBX(e.target.files[0]);
-};
-
-$("importVideo").onclick=()=>$("videoFile").click();
-$("videoFile").onchange=e=>{
-  if(!e.target.files[0])return;
-  const file=e.target.files[0];
-  importedVideo=URL.createObjectURL(file);
-
-  const video=document.createElement("video");
-  video.src=importedVideo;
-  video.loop=false;
-  video.muted=true;
-  video.playsInline=true;
-  video.style.display="none";
-  document.body.appendChild(video);
-
-  video.addEventListener("loadedmetadata",()=>{
-    const texture=new THREE.VideoTexture(video);
-    const geo=new THREE.PlaneGeometry(16,9);
-    const mat=new THREE.MeshBasicMaterial({map:texture});
-    const mesh=new THREE.Mesh(geo,mat);
-    mesh.position.z=-5;
-    addObject(mesh,"video",file.name);
-    addClip("videoTrack",file.name,video.duration||10,"video");
-  });
-  video.load();
-};
-
-$("importImage").onclick=()=>$("imageFile").click();
-$("imageFile").onchange=e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-
-  const url=URL.createObjectURL(file);
-  new THREE.TextureLoader().load(url,texture=>{
-    const aspect=texture.image.width/texture.image.height;
-    const h=4;
-    const geo=new THREE.PlaneGeometry(h*aspect,h);
-    const mat=new THREE.MeshBasicMaterial({
-      map:texture,
-      transparent:true
-    });
-    const mesh=new THREE.Mesh(geo,mat);
-    mesh.position.z=-4;
-    addObject(mesh,"image",file.name);
-    addClip("videoTrack",file.name,5,"video");
-    URL.revokeObjectURL(url);
-  });
-};
-
-$("importAudio").onclick=()=>$("audioFile").click();
-$("audioFile").onchange=e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  importedAudio=URL.createObjectURL(file);
-  addClip("audioTrack",file.name,10,"audio");
-};
-
-$("addText").onclick=()=>{
-  const text=document.createElement("div");
-  text.textContent="TEXT";
-  text.style.position="fixed";
-  text.style.left="-9999px";
-  document.body.appendChild(text);
-
-  const canvas2=document.createElement("canvas");
-  canvas2.width=1024;
-  canvas2.height=256;
-  const ctx=canvas2.getContext("2d");
-  ctx.fillStyle="white";
-  ctx.font="bold 100px Arial";
-  ctx.textAlign="center";
-  ctx.fillText("TEXT",512,145);
-
-  const tex=new THREE.CanvasTexture(canvas2);
-  const geo=new THREE.PlaneGeometry(8,2);
-  const mat=new THREE.MeshBasicMaterial({
-    map:tex,
-    transparent:true
-  });
-  const mesh=new THREE.Mesh(geo,mat);
-  mesh.position.set(0,2,-3);
-
-  addObject(mesh,"text","TEXT");
-  addClip("textTrack","TEXT",5,"text");
-  text.remove();
-};
-
-function addClip(trackId,name,duration,type){
-  const track=$(trackId);
-  const clip=document.createElement("div");
-  clip.className="clip "+type;
-  clip.textContent=name;
-  clip.style.left="110px";
-  clip.style.width=Math.max(70,duration*zoom)+"px";
-  track.appendChild(clip);
 }
 
-function addKeyVisual(){
-  if(!selected)return;
-  const track=$("modelTrack");
-
-  const key=document.createElement("div");
-  key.className="key";
-  key.style.left=(110+currentTime*zoom)+"px";
-  key.title="Keyframe bei "+currentTime.toFixed(2)+"s";
-  track.appendChild(key);
-}
-
-$("addKey").onclick=()=>{
-  if(!selected)return;
-
-  const data={
-    time:currentTime,
-    object:objects.indexOf(selected),
-    position:selected.position.toArray(),
-    rotation:[selected.rotation.x,selected.rotation.y,selected.rotation.z],
-    scale:selected.scale.toArray()
-  };
-
-  keys.push(data);
-  addKeyVisual();
-};
-
-$("clearKeys").onclick=()=>{
-  keys=[];
-  document.querySelectorAll(".key").forEach(e=>e.remove());
-};
-
-function applyKeys(){
-  if(!selected||!keys.length)return;
-
-  const mine=keys
-    .filter(k=>k.object===objects.indexOf(selected))
-    .sort((a,b)=>a.time-b.time);
-
-  if(!mine.length)return;
-
-  let a=mine[0];
-  let b=mine[mine.length-1];
-
-  for(let i=0;i<mine.length-1;i++){
-    if(currentTime>=mine[i].time&&currentTime<=mine[i+1].time){
-      a=mine[i];
-      b=mine[i+1];
-      break;
-    }
-  }
-
-  if(a===b){
-    selected.position.fromArray(a.position);
-    selected.rotation.set(...a.rotation);
-    selected.scale.fromArray(a.scale);
-    return;
-  }
-
-  const t=THREE.MathUtils.clamp(
-    (currentTime-a.time)/(b.time-a.time),0,1
-  );
-
-  selected.position.fromArray(a.position).lerp(
-    new THREE.Vector3().fromArray(b.position),t
-  );
-
-  selected.rotation.x=THREE.MathUtils.lerp(a.rotation[0],b.rotation[0],t);
-  selected.rotation.y=THREE.MathUtils.lerp(a.rotation[1],b.rotation[1],t);
-  selected.rotation.z=THREE.MathUtils.lerp(a.rotation[2],b.rotation[2],t);
-
-  selected.scale.fromArray(a.scale).lerp(
-    new THREE.Vector3().fromArray(b.scale),t
-  );
-}
-
-function setTime(t){
-  currentTime=THREE.MathUtils.clamp(t,0,Number($("duration").value)||10);
-  $("timeInput").value=currentTime.toFixed(3);
-  updateTimeUI();
-  applyKeys();
-
-  if(mixer)mixer.setTime(currentTime);
-
-  document.querySelectorAll("video").forEach(v=>{
-    try{v.currentTime=currentTime}catch{}
-  });
-}
-
-function updateTimeUI(){
-  const fps=Number($("fps").value)||30;
-  const totalFrames=Math.floor(currentTime*fps);
-  const hh=Math.floor(totalFrames/(fps*3600));
-  const mm=Math.floor(totalFrames/(fps*60))%60;
-  const ss=Math.floor(totalFrames/fps)%60;
-  const ff=totalFrames%fps;
-
-  $("timecode").textContent=
-    String(hh).padStart(2,"0")+":"+
-    String(mm).padStart(2,"0")+":"+
-    String(ss).padStart(2,"0")+"."+
-    String(ff).padStart(2,"0");
-
-  $("playhead").style.left=(105+currentTime*zoom)+"px";
-}
-
-$("timeInput").oninput=e=>setTime(Number(e.target.value));
-
-$("play").onclick=()=>{
-  playing=!playing;
-  $("play").textContent=playing?"❚❚":"▶";
-};
-
-$("timelinePlay").onclick=()=>{
-  playing=!playing;
-  $("timelinePlay").textContent=playing?"❚❚":"▶";
-};
-
-$("back").onclick=()=>setTime(0);
-$("next").onclick=()=>setTime(currentTime+1);
-
-$("resetCamera").onclick=()=>{
-  camera.position.set(4,3,7);
-  controls.target.set(0,0,0);
-  controls.update();
-};
-
-$("zoomIn").onclick=()=>{
-  zoom=Math.min(300,zoom*1.25);
-  rebuildTimeline();
-};
-
-$("zoomOut").onclick=()=>{
-  zoom=Math.max(30,zoom/1.25);
-  rebuildTimeline();
-};
-
-function rebuildTimeline(){
-  document.querySelectorAll(".clip").forEach(c=>{
-    const d=Number(c.dataset.duration)||5;
-    c.style.width=Math.max(70,d*zoom)+"px";
-  });
-
-  const ruler=$("ruler");
-  ruler.innerHTML="";
-  const duration=Number($("duration").value)||10;
-
-  for(let i=0;i<=duration;i++){
-    const t=document.createElement("div");
-    t.className="tick";
-    t.style.left=(105+i*zoom)+"px";
-    t.textContent=i+"s";
-    ruler.appendChild(t);
-  }
-
-  updateTimeUI();
-}
-
-function loop(){
-  requestAnimationFrame(loop);
-
-  if(playing){
-    const dt=1/60;
-    currentTime+=dt;
-
-    if(currentTime>=Number($("duration").value)||10){
-      currentTime=0;
-      if(mixer)mixer.stopAllAction();
-    }
-
-    if(mixer)mixer.update(dt);
-    applyKeys();
-    updateTimeUI();
-  }
-
-  controls.update();
-  render();
-}
-loop();
-
-$("duration").oninput=rebuildTimeline;
-$("fps").oninput=updateTimeUI;
-
-$("tracks").addEventListener("pointerdown",e=>{
-  if(e.target.closest(".clip")||e.target.closest(".track-label"))return;
-  const rect=$("tracks").getBoundingClientRect();
-  const x=e.clientX-rect.left+$("tracks").scrollLeft-105;
-  setTime(Math.max(0,x/zoom));
 });
 
-function addClipPatched(trackId,name,duration,type){
-  const track=$(trackId);
-  const clip=document.createElement("div");
-  clip.className="clip "+type;
-  clip.textContent=name;
-  clip.dataset.duration=duration;
-  clip.style.left="110px";
-  clip.style.width=Math.max(70,duration*zoom)+"px";
-  track.appendChild(clip);
+scene.add(model);
+
+animations=object.animations||[];
+
+if(animations.length){
+
+mixer=new THREE.AnimationMixer(model);
+
+currentAnimation=mixer.clipAction(
+animations[0]
+);
+
+currentAnimation.play();
+
 }
 
-window.addClip=addClipPatched;
+document.getElementById("hud").textContent=
+file.name+
+"  •  "+
+animations.length+
+" Animation"+(animations.length===1?"":"en");
 
-$("dropZone").ondragover=e=>{
-  e.preventDefault();
-  $("dropZone").style.background="#191e29";
+createModelClip(file.name);
+
+URL.revokeObjectURL(url);
+
+},
+
+undefined,
+
+error=>{
+console.error(error);
+alert(
+"FBX konnte nicht geladen werden.\n\n"+
+"Die Datei muss eine gültige FBX-Datei sein."
+);
+}
+
+);
+
+}
+
+
+/* =========================
+   VIDEO
+========================= */
+
+document.getElementById("videoButton").onclick=()=>{
+document.getElementById("fileVideo").click();
 };
 
-$("dropZone").ondragleave=()=>{
-  $("dropZone").style.background="";
+
+document.getElementById("fileVideo").onchange=e=>{
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+loadVideo(file);
+
 };
 
-$("dropZone").ondrop=e=>{
-  e.preventDefault();
-  $("dropZone").style.background="";
 
-  [...e.dataTransfer.files].forEach(file=>{
-    const ext=file.name.split(".").pop().toLowerCase();
+function loadVideo(file){
 
-    if(ext==="fbx")loadFBX(file);
-    else if(file.type.startsWith("video/")){
-      const dt=new DataTransfer();
-      dt.items.add(file);
-      $("videoFile").files=dt.files;
-      $("videoFile").dispatchEvent(new Event("change"));
-    }
-    else if(file.type.startsWith("image/")){
-      const dt=new DataTransfer();
-      dt.items.add(file);
-      $("imageFile").files=dt.files;
-      $("imageFile").dispatchEvent(new Event("change"));
-    }
-    else if(file.type.startsWith("audio/")){
-      const dt=new DataTransfer();
-      dt.items.add(file);
-      $("audioFile").files=dt.files;
-      $("audioFile").dispatchEvent(new Event("change"));
-    }
-  });
+const url=URL.createObjectURL(file);
+
+if(video){
+
+video.pause();
+
+video.remove();
+
+}
+
+video=document.createElement("video");
+
+video.src=url;
+video.muted=true;
+video.playsInline=true;
+video.preload="auto";
+
+document.body.appendChild(video);
+
+video.style.display="none";
+
+video.onloadedmetadata=()=>{
+
+duration=video.duration||10;
+
+createVideoClip(file.name,duration);
+
+videoTexture=new THREE.VideoTexture(video);
+
+videoTexture.colorSpace=THREE.SRGBColorSpace;
+
+const geometry=
+new THREE.PlaneGeometry(16,9);
+
+const material=
+new THREE.MeshBasicMaterial({
+map:videoTexture
+});
+
+videoMesh=
+new THREE.Mesh(
+geometry,
+material
+);
+
+videoMesh.position.set(
+0,
+0,
+-5
+);
+
+scene.add(videoMesh);
+
+document.getElementById("hud").textContent=
+file.name+
+"  •  "+
+formatTime(duration);
+
+createRuler();
+
 };
 
-$("newProject").onclick=()=>{
-  if(!confirm("Neues Projekt erstellen?"))return;
+video.load();
 
-  objects.forEach(o=>scene.remove(o));
-  objects=[];
-  selected=null;
-  keys=[];
-  mixer=null;
-  animations=[];
-  playing=false;
-  currentTime=0;
-  document.querySelectorAll(".clip,.key").forEach(e=>e.remove());
-  refreshSceneList();
-  updateStatus();
-  setTime(0);
+}
+
+
+/* =========================
+   TIMELINE
+========================= */
+
+function createModelClip(name){
+
+const track=
+document.getElementById("modelTrack");
+
+track.querySelectorAll(".clip").forEach(e=>e.remove());
+
+const clip=document.createElement("div");
+
+clip.className="clip";
+
+clip.textContent=
+"FBX  •  "+name;
+
+clip.style.left="115px";
+clip.style.width=
+Math.max(150,duration*PIXELS_PER_SECOND)+"px";
+
+track.appendChild(clip);
+
+}
+
+
+function createVideoClip(name,d){
+
+const track=
+document.getElementById("videoTrack");
+
+track.querySelectorAll(".clip").forEach(e=>e.remove());
+
+const clip=document.createElement("div");
+
+clip.className="clip video";
+
+clip.textContent=
+"VIDEO  •  "+name;
+
+clip.style.left="115px";
+
+clip.style.width=
+Math.max(150,d*PIXELS_PER_SECOND)+"px";
+
+track.appendChild(clip);
+
+}
+
+
+function createRuler(){
+
+const ruler=
+document.getElementById("ruler");
+
+ruler.innerHTML="";
+
+for(let i=0;i<=Math.ceil(duration);i++){
+
+const tick=document.createElement("div");
+
+tick.className="tick";
+
+tick.style.left=
+(115+i*PIXELS_PER_SECOND)+"px";
+
+tick.textContent=
+formatTime(i);
+
+ruler.appendChild(tick);
+
+}
+
+ruler.style.width=
+(115+duration*PIXELS_PER_SECOND+300)+"px";
+
+document.querySelectorAll(".track").forEach(
+track=>{
+track.style.width=
+(115+duration*PIXELS_PER_SECOND+300)+"px";
+}
+);
+
+}
+
+
+/* =========================
+   TIME
+========================= */
+
+function setTime(t){
+
+time=Math.max(
+0,
+Math.min(duration,t)
+);
+
+if(video){
+
+try{
+video.currentTime=time;
+}catch{}
+
+}
+
+if(mixer){
+
+mixer.setTime(time);
+
+}
+
+updateTimeline();
+
+}
+
+
+function updateTimeline(){
+
+document.getElementById("time").textContent=
+formatTime(time);
+
+document.getElementById("playhead").style.left=
+(115+time*PIXELS_PER_SECOND)+"px";
+
+}
+
+
+function formatTime(seconds){
+
+const ms=Math.floor(
+(seconds%1)*1000
+);
+
+const total=Math.floor(seconds);
+
+const s=total%60;
+const m=Math.floor(total/60)%60;
+const h=Math.floor(total/3600);
+
+return String(h).padStart(2,"0")+
+":"+
+String(m).padStart(2,"0")+
+":"+
+String(s).padStart(2,"0")+
+"."+
+String(ms).padStart(3,"0");
+
+}
+
+
+/* =========================
+   PLAYBACK
+========================= */
+
+function play(){
+
+playing=true;
+
+if(video){
+
+video.play().catch(()=>{});
+
+}
+
+if(currentAnimation){
+
+currentAnimation.paused=false;
+
+}
+
+document.getElementById("playButton").textContent="❚❚";
+document.getElementById("centerPlay").textContent="❚❚";
+
+}
+
+
+function pause(){
+
+playing=false;
+
+if(video){
+video.pause();
+}
+
+document.getElementById("playButton").textContent="▶";
+document.getElementById("centerPlay").textContent="▶";
+
+}
+
+
+function togglePlay(){
+
+if(playing)pause();
+else play();
+
+}
+
+
+document.getElementById("playButton").onclick=togglePlay;
+document.getElementById("centerPlay").onclick=togglePlay;
+
+document.getElementById("stopButton").onclick=()=>{
+pause();
+setTime(0);
 };
 
-$("exportScene").onclick=()=>{
-  const data={
-    editor:"GHOST 3D VIDEO EDITOR",
-    version:1,
-    fps:Number($("fps").value),
-    width:Number($("width").value),
-    height:Number($("height").value),
-    duration:Number($("duration").value),
-    objects:objects.map(o=>({
-      name:o.userData.editorName,
-      type:o.userData.editorType,
-      position:o.position.toArray(),
-      rotation:[o.rotation.x,o.rotation.y,o.rotation.z],
-      scale:o.scale.toArray()
-    })),
-    keyframes:keys
-  };
-
-  download(
-    new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),
-    "ghost-3d-scene.json"
-  );
+document.getElementById("rewind").onclick=()=>{
+setTime(0);
 };
+
+document.getElementById("forward").onclick=()=>{
+setTime(Math.min(duration,time+1));
+};
+
+
+/* =========================
+   TIMELINE CLICK
+========================= */
+
+document.getElementById("timeline").addEventListener(
+"pointerdown",
+e=>{
+
+if(e.target.closest(".clip"))return;
+
+const rect=
+document.getElementById("timeline").getBoundingClientRect();
+
+const x=
+e.clientX-
+rect.left+
+document.getElementById("timeline").scrollLeft;
+
+setTime(
+Math.max(
+0,
+(x-115)/PIXELS_PER_SECOND
+)
+);
+
+}
+);
+
+
+/* =========================
+   RENDER LOOP
+========================= */
+
+function loop(now){
+
+requestAnimationFrame(loop);
+
+const dt=
+Math.min(
+0.05,
+(now-lastFrame)/1000
+);
+
+lastFrame=now;
+
+if(playing){
+
+time+=dt;
+
+if(time>=duration){
+
+time=duration;
+pause();
+
+}
+
+if(mixer){
+
+mixer.update(dt);
+
+}
+
+if(video){
+
+if(Math.abs(video.currentTime-time)>0.08){
+
+try{
+video.currentTime=time;
+}catch{}
+
+}
+
+}
+
+updateTimeline();
+
+}
+
+controls.update();
+
+renderer.render(
+scene,
+camera
+);
+
+}
+
+requestAnimationFrame(loop);
+
+
+/* =========================
+   WEBM EXPORT
+========================= */
+
+document.getElementById("exportButton").onclick=
+exportWebM;
+
 
 async function exportWebM(){
-  const width=Number($("width").value)||1280;
-  const height=Number($("height").value)||720;
-  const fps=Math.min(60,Math.max(1,Number($("fps").value)||30));
-  const duration=Number($("duration").value)||10;
 
-  const oldW=renderer.domElement.width;
-  const oldH=renderer.domElement.height;
+if(!model && !video){
 
-  renderer.setSize(width,height,false);
-  camera.aspect=width/height;
-  camera.updateProjectionMatrix();
+alert(
+"Importiere zuerst ein FBX-Modell oder ein Video."
+);
 
-  const stream=renderer.domElement.captureStream(fps);
+return;
 
-  let mime="video/webm;codecs=vp9";
-  if(!MediaRecorder.isTypeSupported(mime))
-    mime="video/webm;codecs=vp8";
-  if(!MediaRecorder.isTypeSupported(mime))
-    mime="video/webm";
-
-  const recorder=new MediaRecorder(stream,{
-    mimeType:mime,
-    videoBitsPerSecond:10_000_000
-  });
-
-  const chunks=[];
-  recorder.ondataavailable=e=>{
-    if(e.data.size)chunks.push(e.data);
-  };
-
-  recorder.onstop=()=>{
-    const blob=new Blob(chunks,{type:"video/webm"});
-    download(blob,"ghost-3d-video.webm");
-
-    renderer.setSize(oldW,oldH,false);
-    camera.aspect=oldW/oldH;
-    camera.updateProjectionMatrix();
-
-    playing=false;
-    $("exportWebM").textContent="WEBM EXPORT";
-    setTime(0);
-  };
-
-  $("exportWebM").textContent="EXPORTIERE…";
-  setTime(0);
-  recorder.start();
-
-  let start=performance.now();
-
-  function capture(now){
-    const elapsed=(now-start)/1000;
-
-    if(elapsed>=duration){
-      render();
-      recorder.stop();
-      return;
-    }
-
-    setTime(elapsed);
-    render();
-
-    requestAnimationFrame(capture);
-  }
-
-  requestAnimationFrame(capture);
 }
 
-$("exportWebM").onclick=exportWebM;
+const modal=
+document.getElementById("exportModal");
 
-function download(blob,name){
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
+modal.style.display="flex";
+
+const progress=
+document.getElementById("progressBar");
+
+const progressText=
+document.getElementById("exportProgress");
+
+
+const exportWidth=1280;
+const exportHeight=720;
+const fps=30;
+
+
+/* Rendergröße */
+
+renderer.setSize(
+exportWidth,
+exportHeight,
+false
+);
+
+camera.aspect=
+exportWidth/exportHeight;
+
+camera.updateProjectionMatrix();
+
+
+/* Stream */
+
+const stream=
+canvas.captureStream(fps);
+
+
+let mime=
+"video/webm;codecs=vp9";
+
+if(!MediaRecorder.isTypeSupported(mime)){
+
+mime=
+"video/webm;codecs=vp8";
+
 }
 
-rebuildTimeline();
-updateProperties();
-updateStatus();
+if(!MediaRecorder.isTypeSupported(mime)){
+
+mime="video/webm";
+
+}
+
+
+const recorder=
+new MediaRecorder(
+stream,
+{
+mimeType:mime,
+videoBitsPerSecond:12000000
+}
+);
+
+const chunks=[];
+
+recorder.ondataavailable=e=>{
+
+if(e.data.size)
+chunks.push(e.data);
+
+};
+
+
+return new Promise(resolve=>{
+
+recorder.onstop=()=>{
+
+const blob=
+new Blob(
+chunks,
+{type:"video/webm"}
+);
+
+const url=
+URL.createObjectURL(blob);
+
+const a=
+document.createElement("a");
+
+a.href=url;
+a.download="FBX-Video.webm";
+
+document.body.appendChild(a);
+a.click();
+a.remove();
+
+setTimeout(
+()=>URL.revokeObjectURL(url),
+2000
+);
+
+modal.style.display="none";
+
+progress.style.width="0%";
+progressText.textContent="0%";
+
+renderer.setSize(
+canvas.clientWidth,
+canvas.clientHeight,
+false
+);
+
+camera.aspect=
+canvas.clientWidth/
+canvas.clientHeight;
+
+camera.updateProjectionMatrix();
+
+setTime(0);
+
+resolve();
+
+};
+
+
+/* Aufnahme */
+
+pause();
+setTime(0);
+
+recorder.start();
+
+
+const start=
+performance.now();
+
+
+function capture(now){
+
+const elapsed=
+(now-start)/1000;
+
+
+if(elapsed>=duration){
+
+setTime(duration);
+
+renderer.render(
+scene,
+camera
+);
+
+setTimeout(
+()=>recorder.stop(),
+100
+);
+
+return;
+
+}
+
+
+setTime(elapsed);
+
+
+/* Animation */
+
+if(mixer){
+
+mixer.setTime(elapsed);
+
+}
+
+
+/* Video */
+
+if(video){
+
+try{
+
+if(
+Math.abs(
+video.currentTime-elapsed
+)>0.03
+){
+
+video.currentTime=elapsed;
+
+}
+
+}catch{}
+
+}
+
+
+/* Render */
+
+renderer.render(
+scene,
+camera
+);
+
+
+/* Fortschritt */
+
+const percent=
+Math.floor(
+elapsed/duration*100
+);
+
+progress.style.width=
+percent+"%";
+
+progressText.textContent=
+percent+"%";
+
+
+requestAnimationFrame(capture);
+
+}
+
+requestAnimationFrame(capture);
+
+});
+
+}
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+window.addEventListener(
+"keydown",
+e=>{
+
+if(
+e.target.tagName==="INPUT"||
+e.target.tagName==="TEXTAREA"
+)return;
+
+if(e.code==="Space"){
+
+e.preventDefault();
+togglePlay();
+
+}
+
+if(e.code==="ArrowLeft"){
+
+setTime(time-0.1);
+
+}
+
+if(e.code==="ArrowRight"){
+
+setTime(time+0.1);
+
+}
+
+}
+);
+
+
+/* =========================
+   START
+========================= */
+
+createRuler();
+updateTimeline();
+
 </script>
+
 </body>
 </html>
